@@ -1,13 +1,198 @@
-body {
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+@import url('https://webfontworld.github.io/NanumSquareNeo/NanumSquareNeo.css');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* {
+    font-family: 'NanumSquareNeo', sans-serif !important;
+    box-sizing: border-box;
 }
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+body {
+    margin: 0;
+}
+
+.ReactModal__Overlay {
+    opacity: 0;
+    transition: opacity 280ms ease-in-out;
+}
+
+.ReactModal__Overlay--after-open {
+    opacity: 1;
+}
+
+.ReactModal__Overlay--before-close {
+    opacity: 0;
+}
+
+.pagination {
+    display: flex !important;
+    justify-content: center;
+    margin-top: 3rem;
+    margin-bottom: 3rem;
+}
+
+.pagination li {
+    width: 2.3rem;
+    height: 2.3rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1rem;
+    border-radius: 9999px;
+}
+
+ul.pagination li:first-child {
+}
+
+ul.pagination li:last-child {
+}
+
+.pagination li a {
+    text-decoration: none;
+    color: #4b5563;
+    font-size: 1.2rem;
+}
+
+.pagination li.active a {
+    color: black;
+}
+
+.pagination li.active {
+    font-weight: 600;
+}
+
+/* ul.pagination li a:hover {
+    color: black;
+} */
+
+.pagination li:hover:not(li.active) {
+    background-color: #fff7ed;
+}
+
+.pagination li a.active {
+    color: white;
+}
+
+.pagination li a.active {
+    color: white;
+}
+
+.page-selection {
+    width: 48px;
+    height: 30px;
+    color: #337ab7;
+}
+
+.ql-size-9px {
+    font-size: 9px;
+}
+
+.ql-size-10px {
+    font-size: 10px;
+}
+
+.ql-size-11px {
+    font-size: 11px;
+}
+
+.ql-size-12px {
+    font-size: 12px;
+}
+
+.ql-size-14px {
+    font-size: 14px;
+}
+
+.ql-size-16px {
+    font-size: 16px !important;
+}
+
+.ql-size-18px {
+    font-size: 18px;
+}
+
+.ql-size-20px {
+    font-size: 20px;
+}
+
+.ql-size-22px {
+    font-size: 22px;
+}
+
+.ql-size-24px {
+    font-size: 24px;
+}
+
+.ql-size-26px {
+    font-size: 26px;
+}
+
+.ql-size-28px {
+    font-size: 28px;
+}
+
+.ql-snow .ql-picker.ql-size .ql-picker-item[data-value='9px']::before {
+    content: '9';
+    font-size: 9px !important;
+}
+
+.ql-snow .ql-size .ql-picker-item[data-value='10px']::before {
+    content: '10';
+    font-size: 10px !important;
+}
+
+.ql-snow .ql-size .ql-picker-item[data-value='11px']::before {
+    content: '11';
+    font-size: 11px !important;
+}
+
+.ql-snow .ql-size .ql-picker-item[data-value='12px']::before {
+    content: '12';
+    font-size: 12px !important;
+}
+
+.ql-snow .ql-size .ql-picker-item[data-value='14px']::before {
+    content: '14';
+    font-size: 14px !important;
+}
+
+.ql-snow .ql-size .ql-picker-item[data-value='16px']::before {
+    content: '16';
+    font-size: 16px !important;
+}
+
+.ql-snow .ql-size .ql-picker-item[data-value='18px']::before {
+    content: '18';
+    font-size: 18px !important;
+}
+
+.ql-snow .ql-size .ql-picker-item[data-value='20px']::before {
+    content: '20';
+    font-size: 20px !important;
+}
+
+.ql-snow .ql-size .ql-picker-item[data-value='22px']::before {
+    content: '22';
+    font-size: 22px !important;
+}
+
+.ql-snow .ql-size .ql-picker-item[data-value='24px']::before {
+    content: '24';
+    font-size: 24px !important;
+}
+
+.ql-snow .ql-size .ql-picker-item[data-value='26px']::before {
+    content: '26';
+    font-size: 26px !important;
+}
+
+.ql-snow .ql-size .ql-picker-item[data-value='28px']::before {
+    content: '28';
+    font-size: 28px !important;
+}
+
+.ql-container {
+    border: none !important;
 }
