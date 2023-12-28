@@ -1,31 +1,29 @@
 import { createBrowserRouter } from 'react-router-dom';
-import PublicRoute from './routers/PublicRoute';
-import PrivateRoute from './routers/PrivateRoute';
-import MainHome from './pages/mainHome/index';
-import IntroductionPage from './pages/introduction/index';
-import History from './pages/introduction/History';
-import Rules from './pages/introduction/Rules';
-import Executives from './pages/introduction/Executives';
-import FormerExecutives from './pages/introduction/FormerExecutives';
-import SignIn from './pages/signIn';
-import SignUp from './pages/signUp';
-import SearchIdPw from './pages/searchIdPw/index';
-import UserPage from './pages/user/index';
-import ManagerPage from './pages/manager/index';
-import MemberInquiry from './pages/manager/manager-member-inquiry/MemberInuqiry';
-import BoardPage from './pages/board/index';
-import BoardInfo from './pages/board/board-common-components/board-info/BoardInfo';
-import UnifiedBoardPage from './pages/board/board-unified/index';
-import UnifiedBoardPostForm from './pages/board/board-unified/board-unified-post/UnifiedBoardPostForm';
-import UnifiedBoardModifyForm, {
-    unifiedBoardDataLoader,
-} from './pages/board/board-unified/board-unified-modify/UnifiedBoardModifyForm';
-import ExamBoardPage from './pages/board/board-exam/index';
-import ExamBoardPostForm from './pages/board/board-exam/board-exam-post/ExamBoardPostForm';
+import PublicRoute from './_routers/PublicRoute';
+import PrivateRoute from './_routers/PrivateRoute';
+import MainHome from './(routes)/mainHome/index';
+import IntroductionPage from './(routes)/introduction/index';
+import History from './(routes)/introduction/History';
+import Rules from './(routes)/introduction/Rules';
+import Executives from './(routes)/introduction/Executives';
+import FormerExecutives from './(routes)/introduction/FormerExecutives';
+import SignInPage from './(routes)/signIn/page';
+import SignUpPage from './(routes)/signUp/page';
+import SearchIdPwPage from './(routes)/searchIdPw/page';
+import UserPage from './(routes)/user/index';
+import ManagerPage from './(routes)/manager/index';
+import MemberInquiry from './(routes)/manager/manager-member-inquiry/MemberInuqiry';
+import BoardPage from './(routes)/board/page';
+import BoardInfo from './(routes)/board/board-common-components/board-info/BoardInfo';
+import UnifiedBoardListPage from './(routes)/board/unified/page';
+import UnifiedBoardPostPage from './(routes)/board/unified/post/page';
+import UnifiedBoardModifyPage, { unifiedBoardDataLoader } from './(routes)/board/unified/modify/page';
+import ExamBoardPage from './(routes)/board/board-exam/index';
+import ExamBoardPostForm from './(routes)/board/board-exam/board-exam-post/ExamBoardPostForm';
 import ExamBoardModifyForm, {
     examBoardDataLoader,
-} from './pages/board/board-exam/board-exam-modify/ExamBoardModifyForm';
-import ErrorPage403 from './pages/error/HTTP 403/index';
+} from './(routes)/board/board-exam/board-exam-modify/ExamBoardModifyForm';
+import ErrorPage403 from './(routes)/error/HTTP 403/index';
 
 const router = createBrowserRouter([
     {
@@ -42,9 +40,9 @@ const router = createBrowserRouter([
                     { path: '/introduction/former-executives', element: <FormerExecutives /> },
                 ],
             },
-            { path: '/signin', element: <SignIn />, caseSensitive: true },
-            { path: '/signup', element: <SignUp />, caseSensitive: true },
-            { path: '/idpw-search', element: <SearchIdPw />, caseSensitive: true },
+            { path: '/signin', element: <SignInPage />, caseSensitive: true },
+            { path: '/signup', element: <SignUpPage />, caseSensitive: true },
+            { path: '/idpw-search', element: <SearchIdPwPage />, caseSensitive: true },
         ],
     },
     {
@@ -65,14 +63,14 @@ const router = createBrowserRouter([
             {
                 element: <BoardPage />,
                 children: [
-                    { path: '/board/unified', element: <UnifiedBoardPage /> },
+                    { path: '/board/unified', element: <UnifiedBoardListPage /> },
                     { path: '/board/exam', element: <ExamBoardPage /> },
                     { path: '/board/gallery', element: <>Board Gallery</> },
                 ],
             },
             { path: '/board/unified/:id', element: <BoardInfo /> },
-            { path: '/board/unified/post', element: <UnifiedBoardPostForm /> },
-            { path: '/board/unified/modify', element: <UnifiedBoardModifyForm />, loader: unifiedBoardDataLoader },
+            { path: '/board/unified/post', element: <UnifiedBoardPostPage /> },
+            { path: '/board/unified/modify', element: <UnifiedBoardModifyPage />, loader: unifiedBoardDataLoader },
             { path: '/board/exam/:id', element: <BoardInfo /> },
             { path: '/board/exam/post', element: <ExamBoardPostForm /> },
             { path: '/board/exam/modify', element: <ExamBoardModifyForm />, loader: examBoardDataLoader },
