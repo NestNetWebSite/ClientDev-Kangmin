@@ -8,7 +8,6 @@ import { HiOutlineBuildingOffice2 } from 'react-icons/hi2';
 import { LiaAddressBookSolid, LiaExclamationSolid, LiaUsersSolid } from 'react-icons/lia';
 import { MdOutlineHistoryEdu } from 'react-icons/md';
 import { PiCirclesThree, PiExamLight, PiUserSwitch } from 'react-icons/pi';
-import { RiUserVoiceLine } from 'react-icons/ri';
 import Dropdown from './Dropdown';
 import AuthStatusArea from './auth-status-area/AuthStatusArea';
 
@@ -71,8 +70,8 @@ const navItemsInformation: { label: string; pathname?: string; navItems?: NavIte
 ];
 
 export default function GlobalNavbar() {
-    const [isDropdownOpen, setIsDropdownOpen] = useState<boolean>(false);
-    const [dropdownTarget, setDropdownTarget] = useState<string>('');
+    const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+    const [dropdownTarget, setDropdownTarget] = useState('');
     const location = useLocation();
 
     const handleDropdownClose = useCallback(() => {
@@ -108,7 +107,7 @@ export default function GlobalNavbar() {
                 </Link>
             </div>
             <ul className={'relative flex flex-1 items-center justify-center gap-x-24'}>
-                {navItemsInformation.map((itemInfo) => {
+                {navItemsInformation.map(itemInfo => {
                     if (itemInfo.label === '스터디') {
                         return (
                             <li

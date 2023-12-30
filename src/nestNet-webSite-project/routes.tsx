@@ -14,15 +14,13 @@ import UserPage from './(routes)/user/index';
 import ManagerPage from './(routes)/manager/index';
 import MemberInquiry from './(routes)/manager/manager-member-inquiry/MemberInuqiry';
 import BoardPage from './(routes)/board/page';
-import BoardInfo from './(routes)/board/board-common-components/board-info/BoardInfo';
+import BoardInfoPage from './(routes)/board/info/page';
 import UnifiedBoardListPage from './(routes)/board/unified/page';
 import UnifiedBoardPostPage from './(routes)/board/unified/post/page';
 import UnifiedBoardModifyPage, { unifiedBoardDataLoader } from './(routes)/board/unified/modify/page';
-import ExamBoardPage from './(routes)/board/board-exam/index';
-import ExamBoardPostForm from './(routes)/board/board-exam/board-exam-post/ExamBoardPostForm';
-import ExamBoardModifyForm, {
-    examBoardDataLoader,
-} from './(routes)/board/board-exam/board-exam-modify/ExamBoardModifyForm';
+import ExamBoardPage from './(routes)/board/exam/page';
+import ExamBoardPostPage from './(routes)/board/exam/post/page';
+import ExamBoardModifyPage, { examBoardDataLoader } from './(routes)/board/exam/modify/page';
 import ErrorPage403 from './(routes)/error/HTTP 403/index';
 
 const router = createBrowserRouter([
@@ -68,12 +66,16 @@ const router = createBrowserRouter([
                     { path: '/board/gallery', element: <>Board Gallery</> },
                 ],
             },
-            { path: '/board/unified/:id', element: <BoardInfo /> },
+            { path: '/board/unified/:id', element: <BoardInfoPage /> },
             { path: '/board/unified/post', element: <UnifiedBoardPostPage /> },
-            { path: '/board/unified/modify', element: <UnifiedBoardModifyPage />, loader: unifiedBoardDataLoader },
-            { path: '/board/exam/:id', element: <BoardInfo /> },
-            { path: '/board/exam/post', element: <ExamBoardPostForm /> },
-            { path: '/board/exam/modify', element: <ExamBoardModifyForm />, loader: examBoardDataLoader },
+            {
+                path: '/board/unified/modify/:boardId',
+                element: <UnifiedBoardModifyPage />,
+                loader: unifiedBoardDataLoader,
+            },
+            { path: '/board/exam/:id', element: <BoardInfoPage /> },
+            { path: '/board/exam/post', element: <ExamBoardPostPage /> },
+            { path: '/board/exam/modify/:boardId', element: <ExamBoardModifyPage />, loader: examBoardDataLoader },
             { path: '/error/unauthorized', element: <ErrorPage403 /> },
         ],
     },

@@ -1,13 +1,13 @@
 import axios from 'axios';
 import { nanoid } from 'nanoid';
-import { ChangeEvent, useCallback, useState } from 'react';
+import { ChangeEvent, ChangeEventHandler, useCallback, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useForm, SubmitHandler, Controller } from 'react-hook-form';
 import Select from 'react-select';
 import ReactQuill from 'react-quill';
 import { HiOutlinePencilSquare } from 'react-icons/hi2';
-import { modules, formats } from '../../../board-common-components/quill-toolbar/QuillToolbar';
-import QuillToolbar from '../../../board-common-components/quill-toolbar/QuillToolbar';
+import { modules, formats } from '../../../_components/QuillToolbar';
+import QuillToolbar from '../../../_components/QuillToolbar';
 import 'react-quill/dist/quill.snow.css';
 import FileUpload from './FileUpload';
 
@@ -38,7 +38,7 @@ export default function UnifiedBoardPostForm() {
         formState: { errors },
     } = useForm<Inputs>({ mode: 'onBlur' });
 
-    const handleFileInputChange = useCallback((event: ChangeEvent<HTMLInputElement>) => {
+    const handleFileInputChange: ChangeEventHandler<HTMLInputElement> = useCallback(event => {
         const newFileInformation: FileInfo[] = Array.from(event.target.files).map(file => ({
             id: nanoid(),
             file,
@@ -70,11 +70,18 @@ export default function UnifiedBoardPostForm() {
     return (
         <form className={'mx-auto mt-4 flex w-[45rem] flex-col p-4'} onSubmit={handleSubmit(onSubmit)}>
             <div className={'mb-5 flex flex-col'}>
-                <span className={'mx-2 mb-2 font-semibold text-gray-600'}>카테고리</span>
+                <div className={'flex gap-x-1'}>
+                    <span className={'mx-2 mb-2 font-semibold text-gray-600'}>카테고리</span>
+                    {errors?.unifiedPostType?.message && errors?.unifiedPostType?.type === 'required' && (
+                        <span className={'m-1 text-sm font-semibold text-red-500'}>
+                            {errors.unifiedPostType.message}
+                        </span>
+                    )}
+                </div>
                 <Controller
                     control={control}
                     name={'unifiedPostType'}
-                    defaultValue={'FREE'}
+                    rules={{ required: { value: true, message: '카테고리를 선택해주세요.' } }}
                     render={({ field }) => {
                         return (
                             <Select
@@ -82,6 +89,7 @@ export default function UnifiedBoardPostForm() {
                                 placeholder={'카테고리 선택'}
                                 options={unifiedPostTypeOptions}
                                 onChange={option => field.onChange(option.value)}
+                                onBlur={field.onBlur}
                                 ref={field.ref}
                                 menuPlacement={'auto'}
                                 defaultValue={unifiedPostTypeOptions.find(option => option.value === field.value)}

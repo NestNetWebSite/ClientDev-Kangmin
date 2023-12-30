@@ -1,15 +1,13 @@
 import axios from 'axios';
 import { nanoid } from 'nanoid';
-import { pick } from 'lodash';
-import { ChangeEvent, FormEvent, useCallback, useState } from 'react';
-import { useLoaderData, useNavigate, useSearchParams } from 'react-router-dom';
+import { ChangeEventHandler, useCallback, useState } from 'react';
+import { useLoaderData, useNavigate, useParams } from 'react-router-dom';
+import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import Select from 'react-select';
-import QuillToolbar, { formats, modules } from '../../../board-common-components/quill-toolbar/QuillToolbar';
+import QuillToolbar, { formats, modules } from '../../../_components/QuillToolbar';
 import ReactQuill from 'react-quill';
-import isQuillEmpty from '../../../../../_utils/isQuillEmpty';
-import 'react-quill/dist/quill.snow.css';
 import FileUpload from './FileUpload';
-import type { BoardInfoResponse } from '../../../board-common-components/board-info/types';
+import { HiOutlinePencilSquare } from 'react-icons/hi2';
 
 interface ExistingBoardInfo {
     title: string;
@@ -18,13 +16,13 @@ interface ExistingBoardInfo {
     existingFileData: { id: number; originalFileName: string; saveFileName: string }[];
 }
 
-interface Board {
+interface Inputs {
     title: string;
     bodyContent: string;
     unifiedPostType: string;
 }
 
-interface FileInfo {
+interface FileData {
     id: string | number;
     file: File | { name: string };
     isOriginal?: boolean;
@@ -57,7 +55,7 @@ const response = {
     error: null,
 };
 
-const boardCategorySelectOptions = [
+const unifiedPostTypeOptions: { value: string; label: string }[] = [
     { value: 'FREE', label: '자유' },
     { value: 'DEV', label: '개발' },
     { value: 'CAREER', label: '진로' },
@@ -65,153 +63,167 @@ const boardCategorySelectOptions = [
 
 export default function UnifiedBoardModifyForm() {
     const navigate = useNavigate();
-    const [searchParams] = useSearchParams();
-    const boardId = searchParams.get('boardId');
+    const boardId = useParams().boardId;
 
     // @ts-ignore
     const { title, unifiedPostType, bodyContent, existingFileData }: ExistingBoardInfo = useLoaderData();
 
-    const [values, setValues] = useState<Board>({
-        title,
-        bodyContent,
-        unifiedPostType,
-    });
-    const [fileInformation, setFileInformation] = useState<FileInfo[]>(
+    const [fileInformation, setFileInformation] = useState<FileData[]>(
         existingFileData.map(file => ({
             file: { name: file.originalFileName },
             id: file.id,
             isOriginal: true,
         })),
     );
-    const [existingFileIdList, setExistingFileIdList] = useState<number[]>(existingFileData.map(file => file.id));
 
-    const handleInputChange = useCallback(
-        (event: ChangeEvent<HTMLInputElement>) => {
-            const key = event.target.id.replace('Input', '');
-            const value = event.target.value;
-            setValues({ ...values, [key]: value });
-        },
-        [values],
-    );
+    const [existingFileIdList, setExistingFileIdList] = useState(existingFileData.map(file => file.id));
 
-    const handleContentChange = useCallback(
-        (content: string) => {
-            setValues({ ...values, bodyContent: content });
-        },
-        [values],
-    );
+    const {
+        control,
+        register,
+        handleSubmit,
+        formState: { errors },
+    } = useForm<Inputs>({ mode: 'onBlur', defaultValues: { title, bodyContent, unifiedPostType } });
 
-    const handleSelectChange = useCallback(
-        (event: any) => {
-            if (event === null) {
-                return;
-            }
-            setValues({ ...values, unifiedPostType: event.value });
-        },
-        [values],
-    );
+    const handleFileInputChange: ChangeEventHandler<HTMLInputElement> = useCallback(event => {
+        const newFileInformation: FileData[] = Array.from(event.target.files).map(file => ({ id: nanoid(), file }));
+        setFileInformation(prevState => [...prevState, ...newFileInformation]);
+    }, []);
 
-    const handleFileInputChange = useCallback(
-        (event: ChangeEvent<HTMLInputElement>) => {
-            const newFileInformation: FileInfo[] = Array.from(event.target.files).map(file => ({ id: nanoid(), file }));
-            setFileInformation([...fileInformation, ...newFileInformation]);
-        },
-        [fileInformation],
-    );
+    const handleFileDeleteButtonClick = useCallback((targetFileInfo: FileData) => {
+        if ('isOriginal' in targetFileInfo.file) {
+            setExistingFileIdList(prevState => prevState.filter(id => id !== targetFileInfo.id));
+        }
+        setFileInformation(prevState => prevState.filter(fileData => fileData.id !== targetFileInfo.id));
+    }, []);
 
-    const handleFileDelete = useCallback(
-        (targetFileInfo: FileInfo) => {
-            if ('isOriginal' in targetFileInfo.file) {
-                setExistingFileIdList(existingFileIdList.filter(id => id !== targetFileInfo.id));
-            }
-            setFileInformation(fileInformation.filter(fileInfo => fileInfo.id !== targetFileInfo.id));
-        },
-        [fileInformation, existingFileIdList],
-    );
+    const onSubmit: SubmitHandler<Inputs> = data => {
+        console.log(data);
+        const formData = new FormData();
+        const blob = new Blob([JSON.stringify({ ...data, id: boardId })], { type: 'application/json' });
+        formData.append('data', blob);
 
-    const handleFormSubmit = useCallback(
-        (event: FormEvent<HTMLFormElement>) => {
-            event.preventDefault();
-            const formData = new FormData();
-            const blob = new Blob([JSON.stringify({ ...values, id: boardId })], { type: 'application/json' });
-            formData.append('data', blob);
+        const addedFileInformation = fileInformation.filter(fileData => !('isOriginal' in fileData));
+        if (addedFileInformation.length === 0) {
+            formData.append('file', JSON.stringify([]));
+        } else {
+            addedFileInformation.forEach(fileData => {
+                if (fileData.file instanceof File) {
+                    formData.append('file', fileData.file);
+                }
+            });
+        }
 
-            const addedFileInformation = fileInformation.filter(fileInfo => !('isOriginal' in fileInfo));
-            if (addedFileInformation.length === 0) {
-                formData.append('file', JSON.stringify([]));
-            } else {
-                addedFileInformation.forEach(fileInfo => {
-                    if (fileInfo.file instanceof File) {
-                        formData.append('file', fileInfo.file);
-                    }
-                });
-            }
-
-            const fileIdListBlob = new Blob([JSON.stringify(existingFileIdList)], { type: 'application/json' });
-            formData.append('file-id', fileIdListBlob);
-            axios
-                .post(`${process.env.BACKEND_URL}/?/modify`, formData, {
-                    withCredentials: true,
-                    headers: { 'Content-Type': 'multipart/form-data' },
-                })
-                .then(() => navigate(-1))
-                .catch(reason => window.alert(reason));
-        },
-        [values, fileInformation, existingFileIdList],
-    );
+        const fileIdListBlob = new Blob([JSON.stringify(existingFileIdList)], { type: 'application/json' });
+        formData.append('file-id', fileIdListBlob);
+    };
 
     return (
-        <form onSubmit={handleFormSubmit}>
-            <div>
-                <p>카테고리를 선택해주세요.</p>
-                <Select
-                    defaultValue={boardCategorySelectOptions.find(option => option.value === unifiedPostType)}
-                    placeholder={'카테고리 선택'}
-                    options={boardCategorySelectOptions}
-                    onChange={handleSelectChange}
-                    menuPlacement={'auto'}
+        <form className={'mx-auto mt-4 flex w-[45rem] flex-col p-4'} onSubmit={handleSubmit(onSubmit)}>
+            <div className={'mb-5 flex flex-col'}>
+                <span className={'mx-2 mb-2 font-semibold text-gray-600'}>카테고리</span>
+                <Controller
+                    control={control}
+                    name={'unifiedPostType'}
+                    render={({ field }) => {
+                        return (
+                            <Select
+                                isSearchable={false}
+                                placeholder={'카테고리 선택'}
+                                options={unifiedPostTypeOptions}
+                                onChange={option => field.onChange(option.value)}
+                                ref={field.ref}
+                                menuPlacement={'auto'}
+                                defaultValue={unifiedPostTypeOptions.find(option => option.value === field.value)}
+                                classNames={{
+                                    control() {
+                                        return '!rounded-lg !h-[52px] !border !border-gray-100 !bg-gray-100 !border-2 !text-sm !shadow-none';
+                                    },
+
+                                    option() {
+                                        return '!text-sm';
+                                    },
+                                }}
+                            />
+                        );
+                    }}
                 />
             </div>
-            <div>
-                <label htmlFor={'titleInput'}>제목을 입력해주세요.</label>
+            <div className={'my-5 flex flex-col'}>
+                <div className={'flex gap-x-1'}>
+                    <label className={'mx-2 mb-2 w-fit font-semibold text-gray-600'} htmlFor={'titleInput'}>
+                        게시글 제목
+                    </label>
+                    {errors?.title?.message && errors?.title?.type === 'required' && (
+                        <span className={'m-1 text-sm font-semibold text-red-500'}>{errors.title.message}</span>
+                    )}
+                </div>
                 <input
+                    className={'rounded-lg border-2 border-gray-100 bg-gray-100 px-4 py-3 focus:outline-none'}
                     id={'titleInput'}
                     type={'text'}
-                    value={values.title}
-                    onChange={handleInputChange}
-                    maxLength={30}
                     autoComplete={'off'}
                     autoCapitalize={'off'}
+                    {...register('title', { required: { value: true, message: '게시글 제목을 입력해주세요.' } })}
                 />
             </div>
-            <div>
-                <p>내용을 입력해주세요.</p>
-                <div>
-                    <QuillToolbar />
-                    <ReactQuill
-                        theme={'snow'}
-                        modules={modules}
-                        formats={formats}
-                        value={values.bodyContent}
-                        onChange={handleContentChange}
+            <div className={'my-5 flex flex-col'}>
+                <div className={'flex gap-x-1'}>
+                    <span className={'mx-2 mb-2 font-semibold text-gray-600'}>게시글 내용</span>
+                    {errors?.bodyContent?.message && errors?.bodyContent?.type === 'required' && (
+                        <span className={'m-1 text-sm font-semibold text-red-500'}>{errors.bodyContent.message}</span>
+                    )}
+                </div>
+                <div className={'rounded-xl border-2 border-gray-100'}>
+                    <Controller
+                        control={control}
+                        name={'bodyContent'}
+                        rules={{
+                            validate: {
+                                required(value) {
+                                    return value.length !== 0 || '게시글 내용을 입력해주세요.';
+                                },
+                            },
+                        }}
+                        render={({ field }) => {
+                            return (
+                                <>
+                                    <QuillToolbar />
+                                    <ReactQuill
+                                        defaultValue={field.value}
+                                        theme={'snow'}
+                                        modules={modules}
+                                        formats={formats}
+                                        className={'h-[20rem] rounded-b-xl border border-gray-100 bg-gray-100'}
+                                        onChange={(content: string) => {
+                                            if (content.replace(/<(.|\n)*?>/g, '').trim().length === 0) {
+                                                field.onChange('');
+                                            } else {
+                                                field.onChange(content);
+                                            }
+                                        }}
+                                        onBlur={field.onBlur}
+                                    />
+                                </>
+                            );
+                        }}
                     />
                 </div>
             </div>
             <FileUpload
                 fileInformation={fileInformation}
                 onFileInputChange={handleFileInputChange}
-                onFileDeleteButtonClick={handleFileDelete}
+                onFileDeleteButtonClick={handleFileDeleteButtonClick}
             />
-            <div>
+            <div className={'flex w-full justify-end'}>
                 <button
-                    disabled={
-                        values.unifiedPostType.trim().length === 0 ||
-                        values.title.trim().length === 0 ||
-                        isQuillEmpty(values.bodyContent)
+                    className={
+                        'mt-3 box-content flex items-center gap-x-2 rounded-2xl bg-rose-800 px-6 py-3 text-white'
                     }
                     type={'submit'}
                 >
-                    게시글 수정
+                    <HiOutlinePencilSquare className={'h-6 w-6'} />
+                    <span className={'font-semibold '}>게시글 작성</span>
                 </button>
             </div>
         </form>

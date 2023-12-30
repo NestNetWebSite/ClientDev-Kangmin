@@ -1,5 +1,5 @@
 import { Outlet } from 'react-router-dom';
-import SideNavBar from './components/SideNavbar';
+import SideNavBar from './_components/SideNavbar';
 
 export default function Component() {
     return (

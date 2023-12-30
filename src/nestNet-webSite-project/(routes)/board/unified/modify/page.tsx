@@ -1,6 +1,6 @@
-import type { BoardInfoResponse } from '../../board-common-components/board-info/types';
 import { pick } from 'lodash';
-import UnifiedBoardModifyForm from './_components/UnifiedBoardModifyForm2';
+import UnifiedBoardModifyForm from './_components/UnifiedBoardModifyForm';
+import type { BoardInfoResponse } from '../../info/types';
 
 const response: BoardInfoResponse = {
     response: {
