@@ -38,16 +38,16 @@ export default function ({ comments }: { comments: CommentData[] }) {
         },
     });
 
-    const handleCommentDelete = useCallback((id: number) => {
+    const handleCommentDeleteTextClick = useCallback((id: number) => {
         commentDeleteMutate(id);
     }, []);
 
-    const handleCommentModify = useCallback((id: number, newContent: string) => {
+    const modifyComment = useCallback((id: number, newContent: string) => {
         commentModifyMutate({ id, newContent });
     }, []);
 
     return (
-        <div>
+        <ul className={'[&>li:not(&>li:last-child)]:border-b'}>
             {comments.map(comment => {
                 return (
                     <Comment
@@ -58,11 +58,11 @@ export default function ({ comments }: { comments: CommentData[] }) {
                         createdTime={comment.createdTime}
                         modifiedTime={comment.modifiedTime}
                         memberWritten={comment.memberWritten}
-                        onCommentDelete={handleCommentDelete}
-                        onCommentModify={handleCommentModify}
+                        onCommentDeleteTextClick={handleCommentDeleteTextClick}
+                        modifyComment={modifyComment}
                     />
                 );
             })}
-        </div>
+        </ul>
     );
 }

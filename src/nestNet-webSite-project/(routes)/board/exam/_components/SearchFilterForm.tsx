@@ -26,7 +26,7 @@ const examTypeSelectOptions = [
     { value: '', label: '선택안함.' },
 ];
 
-export default function SearchFilterForm({ modalClose }: { modalClose(): void }) {
+export default function SearchFilterForm({ closeModal }: { closeModal(): void }) {
     const { examSearchFilter, filterUpdate } = useExamSearchFilterStore();
     const {
         control,
@@ -51,7 +51,7 @@ export default function SearchFilterForm({ modalClose }: { modalClose(): void })
 
     const onSubmit: SubmitHandler<ExamSearchFilterInputs> = data => {
         filterUpdate(data);
-        modalClose();
+        closeModal();
     };
 
     return (

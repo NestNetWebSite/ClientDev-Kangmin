@@ -1,7 +1,7 @@
 import getAvatarStyle from '../../../../../_utils/getAvatarStyle';
 import type { CommentData } from '../../types';
 
-type Props = CommentData & { onCommentModifyFormOpen(): void; onCommentDelete(id: number): void };
+type Props = CommentData & { onCommentModifyTextClick(): void; onCommentDeleteTextClick(id: number): void };
 
 export default function CommentHeader({
     id,
@@ -9,8 +9,8 @@ export default function CommentHeader({
     createdTime,
     modifiedTime,
     memberWritten,
-    onCommentModifyFormOpen,
-    onCommentDelete,
+    onCommentModifyTextClick,
+    onCommentDeleteTextClick,
 }: Props) {
     return (
         <div className='flex items-center justify-between'>
@@ -21,10 +21,10 @@ export default function CommentHeader({
                 >
                     {username.slice(0, 3)}
                 </div>
-                <div className='flex flex-col'>
-                    <p className='font-bold'>{username}</p>
+                <div className='flex flex-col gap-y-0.5'>
+                    <span className='text-[0.9rem] font-bold'>{username}</span>
                     <div className='flex items-center'>
-                        <span className='text-sm text-gray-700'>{`${createdTime[0]}년 ${createdTime[1]}월 ${createdTime[2]}일`}</span>
+                        <span className='text-[0.8rem] text-gray-500'>{`${createdTime[0]}년 ${createdTime[1]}월 ${createdTime[2]}일`}</span>
                         {modifiedTime !== null && (
                             <span className='ml-5 text-sm text-gray-700'>
                                 수정한 날짜 : {`${modifiedTime[0]}년 ${modifiedTime[1]}월 ${modifiedTime[2]}일`}
@@ -38,14 +38,14 @@ export default function CommentHeader({
                     <span>
                         <span
                             className='mx-1 cursor-pointer text-sm text-gray-400 duration-300 hover:text-gray-800'
-                            onClick={onCommentModifyFormOpen}
+                            onClick={onCommentModifyTextClick}
                         >
                             수정
                         </span>
                         <span
                             className='mx-1 cursor-pointer text-sm text-gray-400 duration-300 hover:text-gray-800'
-                            onClick={(): void => {
-                                onCommentDelete(id);
+                            onClick={() => {
+                                onCommentDeleteTextClick(id);
                             }}
                         >
                             삭제

@@ -17,7 +17,7 @@ export default function FileList({ files }: { files: FileData[] }) {
 
         $aElement.download = originalFileName;
         $aElement.href = objectUrl;
-        $aElement.className = 'hidden';
+        $aElement.hidden = true;
 
         $aElement.click();
         $aElement.remove();
@@ -26,10 +26,10 @@ export default function FileList({ files }: { files: FileData[] }) {
     }, []);
 
     return (
-        <>
-            {files.length !== 0 && (
-                <ul className='mb-7'>
-                    <h1 className='text-base font-semibold'>첨부파일 목록</h1>
+        files.length !== 0 && (
+            <>
+                <h1 className={'mx-2 mb-4 text-base font-semibold'}>첨부파일 목록</h1>
+                <ul className={'mb-9 flex flex-col gap-y-6'}>
                     {files.map(file => {
                         return (
                             <File
@@ -41,7 +41,7 @@ export default function FileList({ files }: { files: FileData[] }) {
                         );
                     })}
                 </ul>
-            )}
-        </>
+            </>
+        )
     );
 }

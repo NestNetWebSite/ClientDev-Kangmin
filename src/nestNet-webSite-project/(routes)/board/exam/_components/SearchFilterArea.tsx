@@ -6,7 +6,7 @@ import { debounce, isEqual } from 'lodash';
 import useExamSearchFilterStore from '../../../../_stores/useExamSearchFilterStore';
 import SearchFilterModal from './SearchFilterModal';
 
-interface ExamSearchFilterType {
+interface ExamSearchFilter {
     year: number;
     semester: string;
     examType: string;
@@ -15,12 +15,12 @@ interface ExamSearchFilterType {
 }
 
 interface Props {
-    currentSearchFilter: ExamSearchFilterType;
+    currentSearchFilter: ExamSearchFilter;
 
-    onSearchFilterSet(newSearchFilter: ExamSearchFilterType): void;
+    updateCurrentSearchFilter(newSearchFilter: ExamSearchFilter): void;
 }
 
-export default function SearchFilterArea({ currentSearchFilter, onSearchFilterSet }: Props) {
+export default function SearchFilterArea({ currentSearchFilter, updateCurrentSearchFilter }: Props) {
     const queryClient = useQueryClient();
 
     const { examSearchFilter } = useExamSearchFilterStore();
@@ -44,7 +44,7 @@ export default function SearchFilterArea({ currentSearchFilter, onSearchFilterSe
             } else if (isEqual(examSearchFilter, currentSearchFilter) && currentPage !== 1) {
                 setSearchParams({ page: '1' });
             } else {
-                onSearchFilterSet(examSearchFilter);
+                updateCurrentSearchFilter(examSearchFilter);
                 setSearchParams({ page: '1' });
             }
         }, 190),
@@ -52,9 +52,9 @@ export default function SearchFilterArea({ currentSearchFilter, onSearchFilterSe
     );
 
     return (
-        <div className={'px-4'}>
+        <div className={'mx-8'}>
             <button
-                onClick={(): void => {
+                onClick={() => {
                     setIsModalOpen(true);
                 }}
                 className={'mr-5 box-content rounded-full p-1 duration-300 hover:scale-105 hover:bg-gray-100'}
@@ -62,7 +62,7 @@ export default function SearchFilterArea({ currentSearchFilter, onSearchFilterSe
                 <BiFilter className={'h-10 w-10'} />
             </button>
             <button
-                onClick={(): void => {
+                onClick={() => {
                     handleSearchButtonClick();
                 }}
                 className={'box-content rounded-full p-1 duration-300 hover:scale-105 hover:bg-gray-100'}
@@ -71,10 +71,10 @@ export default function SearchFilterArea({ currentSearchFilter, onSearchFilterSe
             </button>
             <SearchFilterModal
                 isModalOpen={isModalOpen}
-                onModalCloseButtonClick={(): void => {
+                onModalCloseButtonClick={() => {
                     setIsModalOpen(false);
                 }}
-                modalClose={(): void => {
+                closeModal={() => {
                     setIsModalOpen(false);
                 }}
             />

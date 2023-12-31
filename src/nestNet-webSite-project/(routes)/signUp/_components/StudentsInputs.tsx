@@ -4,6 +4,13 @@ import { LiaIdCard } from 'react-icons/lia';
 import { PiListNumbersLight } from 'react-icons/pi';
 import type { SignUpInputs } from '../page';
 
+const memberAuthoritySelectOptions = [
+    { value: 'PRESIDENT', label: '회장' },
+    { value: 'VICE_PRESIDENT', label: '부회장' },
+    { value: 'MANAGER', label: '관리자' },
+    { value: 'GENERAL_MEMBER', label: '재학생' },
+];
+
 export default function StudentsInputs() {
     const {
         register,
@@ -78,13 +85,8 @@ export default function StudentsInputs() {
                                     },
                                 }}
                                 placeholder={'권한 선택'}
-                                options={[
-                                    { value: 'PRESIDENT', label: '회장' },
-                                    { value: 'VICE_PRESIDENT', label: '부회장' },
-                                    { value: 'MANAGER', label: '관리자' },
-                                    { value: 'GENERAL_MEMBER', label: '재학생' },
-                                ]}
-                                defaultValue={{ value: 'GENERAL_MEMBER', label: '재학생' }}
+                                options={memberAuthoritySelectOptions}
+                                defaultValue={memberAuthoritySelectOptions.find(option => option.value === field.value)}
                                 ref={field.ref}
                                 onChange={option => field.onChange(option.value)}
                                 menuPlacement={'auto'}

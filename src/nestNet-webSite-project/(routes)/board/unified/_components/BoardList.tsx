@@ -10,7 +10,7 @@ export default function BoardList({ boardList }: { boardList: Post[] }) {
     }, []);
 
     return (
-        <main className='mx-auto mb-5 mt-10 w-[49rem]'>
+        <main className={'grid w-full grid-cols-3 gap-x-6 gap-y-7 p-4'}>
             {boardList.map(board => {
                 return (
                     <Board

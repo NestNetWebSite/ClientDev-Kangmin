@@ -4,8 +4,8 @@ import CommentModifyForm from './CommentModifyForm';
 import type { CommentData } from '../../types';
 
 type Props = CommentData & {
-    onCommentDelete(id: number): void;
-    onCommentModify(id: number, newContent: string): void;
+    onCommentDeleteTextClick(id: number): void;
+    modifyComment(id: number, newContent: string): void;
 };
 
 export default function Comment({
@@ -15,16 +15,21 @@ export default function Comment({
     createdTime,
     modifiedTime,
     memberWritten,
-    onCommentDelete,
-    onCommentModify,
+    onCommentDeleteTextClick,
+    modifyComment,
 }: Props) {
     const [isCommentModifyFormOpen, setIsCommentModifyFormOpen] = useState<boolean>(false);
-    const handleCommentModifyFormOpen = useCallback(() => {
-        setIsCommentModifyFormOpen(!isCommentModifyFormOpen);
-    }, [isCommentModifyFormOpen]);
+
+    const handleCommentModifyTextClick = useCallback(() => {
+        setIsCommentModifyFormOpen(prevState => !prevState);
+    }, []);
+
+    const closeCommentModifyForm = useCallback(() => {
+        setIsCommentModifyFormOpen(false);
+    }, []);
 
     return (
-        <div className='my-7 flex flex-col'>
+        <li className='my-7 flex flex-col'>
             <CommentHeader
                 id={id}
                 username={username}
@@ -32,19 +37,19 @@ export default function Comment({
                 createdTime={createdTime}
                 modifiedTime={modifiedTime}
                 memberWritten={memberWritten}
-                onCommentModifyFormOpen={handleCommentModifyFormOpen}
-                onCommentDelete={onCommentDelete}
+                onCommentModifyTextClick={handleCommentModifyTextClick}
+                onCommentDeleteTextClick={onCommentDeleteTextClick}
             />
             {isCommentModifyFormOpen ? (
                 <CommentModifyForm
                     id={id}
                     currentCommentContent={content}
-                    onCommentModifyFormOpen={handleCommentModifyFormOpen}
-                    onCommentModify={onCommentModify}
+                    closeCommentModifyForm={closeCommentModifyForm}
+                    modifyComment={modifyComment}
                 />
             ) : (
-                <div className='mx-1 my-7'>{content}</div>
+                <p className='mx-1 my-7'>{content}</p>
             )}
-        </div>
+        </li>
     );
 }

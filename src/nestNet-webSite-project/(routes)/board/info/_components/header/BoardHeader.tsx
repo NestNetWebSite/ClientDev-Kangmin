@@ -1,6 +1,7 @@
 import { CiHeart } from 'react-icons/ci';
-import { FiUserPlus } from 'react-icons/fi';
+import { FaRegUser } from 'react-icons/fa';
 import { PiEyeLight } from 'react-icons/pi';
+import formatNumber from '../../../../../_utils/formatNumber';
 
 interface Props {
     title: string;
@@ -30,11 +31,11 @@ export default function BoardHeader({
 }: Props) {
     return (
         <header className='mb-4'>
-            <h1 className='text-4xl font-semibold'>{title}</h1>
+            <h1 className='mb-10 text-4xl font-extrabold'>{title}</h1>
             <div className='mb-3 mt-7 flex justify-between'>
                 <div className='flex items-center'>
                     <div className='mr-5 flex items-center'>
-                        <FiUserPlus className='mr-2.5 h-6 w-6' />
+                        <FaRegUser className={'mr-2.5 h-6 w-6'} />
                         <span className='text-[15px] font-bold'>{username}</span>
                     </div>
                     <div className='flex items-center'>
@@ -49,14 +50,14 @@ export default function BoardHeader({
                         )}
                     </div>
                 </div>
-                <div className='mr-5 flex items-center'>
-                    <div className='mr-6 flex items-center'>
-                        <PiEyeLight className='mr-1 h-7 w-7 text-blue-400' />
-                        <span className='text-base text-gray-600'>{viewCount}</span>
+                <div className={'flex items-center gap-x-7'}>
+                    <div className={'flex items-center gap-x-2'}>
+                        <CiHeart className='h-7 w-7 text-red-400' />
+                        <span className='text-base text-gray-600'>{formatNumber(likeCount, 1)}</span>
                     </div>
-                    <div className='flex items-center'>
-                        <CiHeart className='mr-1 h-7 w-7 text-red-400' />
-                        <span className='text-base text-gray-600'>{likeCount}</span>
+                    <div className={'flex items-center gap-x-2'}>
+                        <PiEyeLight className={'h-7 w-7 text-blue-400'} />
+                        <span className={'text-base text-gray-600'}>{formatNumber(viewCount, 1)}</span>
                     </div>
                 </div>
             </div>
@@ -64,17 +65,13 @@ export default function BoardHeader({
                 <div className='mx-3 mt-2 text-right'>
                     <span
                         className='mx-2 cursor-pointer text-gray-500 duration-300 hover:text-gray-900'
-                        onClick={(): void => {
-                            onModifyTextClick();
-                        }}
+                        onClick={onModifyTextClick}
                     >
                         수정
                     </span>
                     <span
                         className='mx-2 cursor-pointer text-gray-500 duration-300 hover:text-gray-900'
-                        onClick={(): void => {
-                            onDeleteTextClick();
-                        }}
+                        onClick={onDeleteTextClick}
                     >
                         삭제
                     </span>

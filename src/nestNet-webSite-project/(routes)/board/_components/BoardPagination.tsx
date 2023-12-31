@@ -23,9 +23,9 @@ export default function BoardPagination({ totalItemsCount }: { totalItemsCount: 
                 firstPageText={<RiSkipLeftLine className={'h-6 w-6'} />}
                 nextPageText={<AiOutlineRight />}
                 lastPageText={<RiSkipRightLine className={'h-6 w-6'} />}
-                innerClass={'my-9 flex justify-center'}
+                innerClass={'my-5 flex justify-center'}
                 itemClass={
-                    'flex h-10 w-10 items-center justify-center rounded-full text-lg text-gray-500 [&:not(&.active)]:hover:text-black [&:not(&.active)]:hover:underline [&:not(&.active)]:hover:decoration-2 [&:not(&.active)]:hover:underline-offset-4'
+                    'flex h-9 w-9 items-center justify-center rounded-full text-lg text-gray-500 [&:not(&.active)]:hover:text-black [&:not(&.active)]:hover:underline [&:not(&.active)]:hover:decoration-2 [&:not(&.active)]:hover:underline-offset-4'
                 }
                 activeLinkClass={'font-bold text-rose-800 underline decoration-2 underline-offset-4'}
             />

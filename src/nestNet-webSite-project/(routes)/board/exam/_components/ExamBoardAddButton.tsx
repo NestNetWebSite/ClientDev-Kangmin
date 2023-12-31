@@ -6,9 +6,10 @@ export default function ExamBoardAddButton() {
     return (
         <button
             className='fixed bottom-20 right-20 box-content rounded-full bg-rose-800 p-3 text-white shadow-md duration-300 hover:scale-110'
-            onClick={(): void => {
+            onClick={() => {
                 navigate('/board/exam/post');
             }}
+            type={'button'}
         >
             <PiPlus className='h-10 w-10' />
         </button>

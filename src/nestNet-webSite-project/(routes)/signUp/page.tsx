@@ -29,7 +29,6 @@ export default function Component() {
     const [isEmailAuthenticated, setIsEmailAuthenticated] = useState(false);
     const [graduates, setGraduates] = useState(false);
     const navigate = useNavigate();
-    console.log(methods.getValues());
 
     const checkEmailAuthenticated = useCallback(() => {
         setIsEmailAuthenticated(prevState => !prevState);

@@ -9,7 +9,7 @@ import BoardPagination from '../_components/BoardPagination';
 import ExamBoardAddButton from './_components/ExamBoardAddButton';
 import type { ExamBoardListResponse } from './types';
 
-interface ExamSearchFilterType {
+interface ExamSearchFilter {
     year: number;
     semester: string;
     examType: string;
@@ -54,7 +54,7 @@ const boardListResponse: ExamBoardListResponse = {
                 professor: '이의종',
                 year: 2023,
                 semester: 1,
-                examType: 'MID',
+                examType: 'FINAL',
                 userName: '매니저',
             },
             {
@@ -63,7 +63,7 @@ const boardListResponse: ExamBoardListResponse = {
                 professor: '이의종',
                 year: 2023,
                 semester: 1,
-                examType: 'MID',
+                examType: 'FINAL',
                 userName: '매니저',
             },
             {
@@ -72,7 +72,7 @@ const boardListResponse: ExamBoardListResponse = {
                 professor: '이의종',
                 year: 2023,
                 semester: 1,
-                examType: 'MID',
+                examType: 'FINAL',
                 userName: '테스트',
             },
             {
@@ -81,7 +81,7 @@ const boardListResponse: ExamBoardListResponse = {
                 professor: '최경',
                 year: 2023,
                 semester: 1,
-                examType: 'MID',
+                examType: 'FINAL',
                 userName: '테스트',
             },
             {
@@ -99,7 +99,7 @@ const boardListResponse: ExamBoardListResponse = {
                 professor: '조희승',
                 year: 2023,
                 semester: 1,
-                examType: 'MID',
+                examType: 'FINAL',
                 userName: '테스트',
             },
         ],
@@ -114,7 +114,7 @@ export default function Component() {
     const currentPage = Number(searchParams.get('page') ?? 1);
     const { year, semester, examType, subject, professor } = currentSearchFilter;
 
-    const handleCurrentSearchFilterSet = useCallback((newSearchFilter: ExamSearchFilterType) => {
+    const updateCurrentSearchFilter = useCallback((newSearchFilter: ExamSearchFilter) => {
         setCurrentSearchFilter(newSearchFilter);
     }, []);
 
@@ -145,7 +145,7 @@ export default function Component() {
             <div className='mx-auto mt-4 w-[70rem]'>
                 <SearchFilterArea
                     currentSearchFilter={currentSearchFilter}
-                    onSearchFilterSet={handleCurrentSearchFilterSet}
+                    updateCurrentSearchFilter={updateCurrentSearchFilter}
                 />
                 <BoardList boardList={boardListResponse.response.posts} />
                 <BoardPagination totalItemsCount={120} />

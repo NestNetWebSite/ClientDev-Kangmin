@@ -8,10 +8,10 @@ interface Props {
 
     onModalCloseButtonClick(): void;
 
-    modalClose(): void;
+    closeModal(): void;
 }
 
-export default function SearchFilterModal({ isModalOpen, onModalCloseButtonClick, modalClose }: Props) {
+export default function SearchFilterModal({ isModalOpen, onModalCloseButtonClick, closeModal }: Props) {
     return (
         <Modal
             isOpen={isModalOpen}
@@ -34,7 +34,7 @@ export default function SearchFilterModal({ isModalOpen, onModalCloseButtonClick
                     <IoCloseOutline className={'h-9 w-9'} />
                 </button>
             </div>
-            <SearchFilterForm modalClose={modalClose} />
+            <SearchFilterForm closeModal={closeModal} />
         </Modal>
     );
 }

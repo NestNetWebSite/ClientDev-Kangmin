@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { ChangeEvent, FormEvent, useCallback, useState } from 'react';
+import { FormEventHandler, useCallback, useState } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 export default function CommentPostForm({ boardId }: { boardId: string }) {
@@ -20,8 +20,8 @@ export default function CommentPostForm({ boardId }: { boardId: string }) {
         },
     });
 
-    const handleFormSubmit = useCallback(
-        (event: FormEvent<HTMLFormElement>) => {
+    const handleFormSubmit: FormEventHandler = useCallback(
+        event => {
             event.preventDefault();
             console.log(commentContent);
         },
@@ -31,9 +31,9 @@ export default function CommentPostForm({ boardId }: { boardId: string }) {
     return (
         <form className='mb-6 mt-3 flex w-full flex-col' onSubmit={handleFormSubmit}>
             <textarea
-                className='h-[8rem] w-full resize-none rounded-xl border border-gray-200 px-4 py-3 text-base shadow-md focus:outline-none'
+                className='h-[8rem] w-full resize-none rounded-xl border border-gray-200 px-4 py-3 text-[0.9rem] text-base shadow-lg focus:outline-none'
                 value={commentContent}
-                onChange={(event: ChangeEvent<HTMLTextAreaElement>) => {
+                onChange={event => {
                     setCommentContent(event.target.value);
                 }}
                 placeholder={'댓글을 작성해주세요.'}

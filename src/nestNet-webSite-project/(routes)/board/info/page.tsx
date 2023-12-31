@@ -50,8 +50,8 @@ const response: BoardInfoResponse = {
             id: 47,
             title: '2023년도 1학기 자료구조 이의종',
             bodyContent: 'test',
-            viewCount: 49,
-            likeCount: 1,
+            viewCount: 4900,
+            likeCount: 1000,
             subject: '자료구조',
             professor: '이의종',
             year: 2023,
@@ -70,6 +70,11 @@ const response2: BoardInfoResponse = {
     response: {
         'is-member-liked': false,
         'file-data': [
+            {
+                id: 44,
+                originalFileName: '개발 게시판 테스트 이미지.png',
+                saveFileName: 'c4a59409-cc6d-4e9e-84fe-3c2c9affff8f_개발 게시판 테스트 이미지.png',
+            },
             {
                 id: 44,
                 originalFileName: '개발 게시판 테스트 이미지.png',
@@ -141,7 +146,7 @@ export default function Page() {
     }, [response]);
 
     return (
-        <div className='mx-auto mt-6 flex w-[50rem] flex-col p-8'>
+        <div className='mx-auto mt-5 flex w-[50rem] flex-col p-8'>
             <div className='flex flex-col'>
                 <BoardHeader
                     title={response.response['post-data'].title}
@@ -156,8 +161,8 @@ export default function Page() {
                 />
                 <hr />
                 <BoardBody bodyContent={response.response['post-data'].bodyContent} />
-                <FileList files={response.response['file-data']} />
-                <div>
+                <FileList files={response2.response['file-data']} />
+                <div className={'mb-9 flex justify-center'}>
                     <BoardLikeButton boardId={boardId} isMemberLiked={response.response['is-member-liked']} />
                 </div>
                 <hr />
