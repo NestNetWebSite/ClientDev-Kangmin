@@ -4,7 +4,7 @@ import queryString from 'query-string';
 import { AiOutlineLeft, AiOutlineRight } from 'react-icons/ai';
 import { RiSkipRightLine, RiSkipLeftLine } from 'react-icons/ri';
 
-export default function BoardPagination({ totalItemsCount }: { totalItemsCount: number }) {
+export default function PostsPagination({ totalItemsCount }: { totalItemsCount: number }) {
     const [searchParams, setSearchParams] = useSearchParams();
     const currentPage = Number(searchParams.get('page') ?? '1');
 

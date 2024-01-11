@@ -11,7 +11,7 @@ export default function BoardList({ boardList }: { boardList: Post[] }) {
 
     return (
         <main className='grid w-full grid-cols-3 gap-x-6 gap-y-7 p-4'>
-            {boardList.map(board => {
+            {boardList?.map(board => {
                 return (
                     <Board
                         key={board.id}

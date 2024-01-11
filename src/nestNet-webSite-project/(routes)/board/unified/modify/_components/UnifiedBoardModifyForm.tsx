@@ -2,12 +2,10 @@ import axios from 'axios';
 import { nanoid } from 'nanoid';
 import { ChangeEventHandler, useCallback, useState } from 'react';
 import { useLoaderData, useNavigate, useParams } from 'react-router-dom';
-import { Controller, SubmitHandler, useForm } from 'react-hook-form';
-import Select from 'react-select';
-import QuillToolbar, { formats, modules } from '../../../_components/QuillToolbar';
-import ReactQuill from 'react-quill';
-import FileUpload from './FileUpload';
-import { HiOutlinePencilSquare } from 'react-icons/hi2';
+import { FormProvider, SubmitHandler, useForm } from 'react-hook-form';
+import PostInputs from '../../../_components/PostInputs';
+import CategoryInput from '../../_components/CategoryInput';
+import FileUpload from '../../../_components/FileUpload';
 
 interface ExistingBoardInfo {
     title: string;
@@ -78,12 +76,7 @@ export default function UnifiedBoardModifyForm() {
 
     const [existingFileIdList, setExistingFileIdList] = useState(existingFileData.map(file => file.id));
 
-    const {
-        control,
-        register,
-        handleSubmit,
-        formState: { errors },
-    } = useForm<Inputs>({ mode: 'onBlur', defaultValues: { title, bodyContent, unifiedPostType } });
+    const formMethods = useForm<Inputs>({ mode: 'onBlur', defaultValues: { title, bodyContent, unifiedPostType } });
 
     const handleFileInputChange: ChangeEventHandler<HTMLInputElement> = useCallback(event => {
         const newFileInformation: FileData[] = Array.from(event.target.files).map(file => ({ id: nanoid(), file }));
@@ -119,113 +112,30 @@ export default function UnifiedBoardModifyForm() {
     };
 
     return (
-        <form className={'mx-auto mt-4 flex w-[45rem] flex-col p-4'} onSubmit={handleSubmit(onSubmit)}>
-            <div className={'mb-5 flex flex-col'}>
-                <span className={'mx-2 mb-2 font-semibold text-gray-600'}>카테고리</span>
-                <Controller
-                    control={control}
-                    name={'unifiedPostType'}
-                    render={({ field }) => {
-                        return (
-                            <Select
-                                isSearchable={false}
-                                placeholder={'카테고리 선택'}
-                                options={unifiedPostTypeOptions}
-                                onChange={option => field.onChange(option.value)}
-                                ref={field.ref}
-                                menuPlacement={'auto'}
-                                defaultValue={unifiedPostTypeOptions.find(option => option.value === field.value)}
-                                classNames={{
-                                    control() {
-                                        return '!rounded-lg !h-[52px] !border !border-gray-100 !bg-gray-100 !border-2 !text-sm !shadow-none';
-                                    },
-
-                                    option() {
-                                        return '!text-sm';
-                                    },
-                                }}
-                            />
-                        );
-                    }}
-                />
-            </div>
-            <div className={'my-5 flex flex-col'}>
-                <div className={'flex gap-x-1'}>
-                    <label className={'mx-2 mb-2 w-fit font-semibold text-gray-600'} htmlFor={'titleInput'}>
-                        게시글 제목
-                    </label>
-                    {errors?.title?.message && errors?.title?.type === 'required' && (
-                        <span className={'m-1 text-sm font-semibold text-red-500'}>{errors.title.message}</span>
-                    )}
+        <FormProvider {...formMethods}>
+            <form className={'mx-auto flex w-[84rem] gap-x-8 p-5'} onSubmit={formMethods.handleSubmit(onSubmit)}>
+                <div className={'mt-8 flex w-4/6 flex-col'}>
+                    <PostInputs />
                 </div>
-                <input
-                    className={'rounded-lg border-2 border-gray-100 bg-gray-100 px-4 py-3 focus:outline-none'}
-                    id={'titleInput'}
-                    type={'text'}
-                    autoComplete={'off'}
-                    autoCapitalize={'off'}
-                    {...register('title', { required: { value: true, message: '게시글 제목을 입력해주세요.' } })}
-                />
-            </div>
-            <div className={'my-5 flex flex-col'}>
-                <div className={'flex gap-x-1'}>
-                    <span className={'mx-2 mb-2 font-semibold text-gray-600'}>게시글 내용</span>
-                    {errors?.bodyContent?.message && errors?.bodyContent?.type === 'required' && (
-                        <span className={'m-1 text-sm font-semibold text-red-500'}>{errors.bodyContent.message}</span>
-                    )}
-                </div>
-                <div className={'rounded-xl border-2 border-gray-100'}>
-                    <Controller
-                        control={control}
-                        name={'bodyContent'}
-                        rules={{
-                            validate: {
-                                required(value) {
-                                    return value.length !== 0 || '게시글 내용을 입력해주세요.';
-                                },
-                            },
-                        }}
-                        render={({ field }) => {
-                            return (
-                                <>
-                                    <QuillToolbar />
-                                    <ReactQuill
-                                        defaultValue={field.value}
-                                        theme={'snow'}
-                                        modules={modules}
-                                        formats={formats}
-                                        className={'h-[20rem] rounded-b-xl border border-gray-100 bg-gray-100'}
-                                        onChange={(content: string) => {
-                                            if (content.replace(/<(.|\n)*?>/g, '').trim().length === 0) {
-                                                field.onChange('');
-                                            } else {
-                                                field.onChange(content);
-                                            }
-                                        }}
-                                        onBlur={field.onBlur}
-                                    />
-                                </>
-                            );
-                        }}
-                    />
-                </div>
-            </div>
-            <FileUpload
-                fileInformation={fileInformation}
-                onFileInputChange={handleFileInputChange}
-                onFileDeleteButtonClick={handleFileDeleteButtonClick}
-            />
-            <div className={'flex w-full justify-end'}>
-                <button
-                    className={
-                        'mt-3 box-content flex items-center gap-x-2 rounded-2xl bg-rose-800 px-6 py-3 text-white'
-                    }
-                    type={'submit'}
+                <div
+                    className={'mt-8 flex h-fit w-2/6 flex-col rounded-3xl border border-gray-200 px-6 py-5 shadow-md'}
                 >
-                    <HiOutlinePencilSquare className={'h-6 w-6'} />
-                    <span className={'font-semibold '}>게시글 작성</span>
-                </button>
-            </div>
-        </form>
+                    <CategoryInput />
+                    <FileUpload
+                        fileInformation={fileInformation}
+                        onFileInputChange={handleFileInputChange}
+                        onFileDeleteButtonClick={handleFileDeleteButtonClick}
+                    />
+                    <button
+                        className={
+                            'w-full rounded-2xl bg-slate-950 p-3 text-white transition-all hover:bg-slate-950/[.85]'
+                        }
+                        type={'submit'}
+                    >
+                        <span className={'font-semibold '}>게시하기</span>
+                    </button>
+                </div>
+            </form>
+        </FormProvider>
     );
 }

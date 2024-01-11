@@ -2,7 +2,7 @@ import { useSearchParams } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import BoardCategories from './_components/BoardCategories';
 import BoardList from './_components/BoardList';
-import BoardPagination from '../_components/BoardPagination';
+import PostsPagination from '../_components/PostsPagination';
 import UnifiedBoardAddButton from './_components/UnifiedBoardAddButton';
 import type { UnifiedBoardListResponse } from './types';
 
@@ -99,7 +99,7 @@ export default function Component() {
             <div className={'mx-auto mt-6 w-[70rem]'}>
                 <BoardCategories />
                 <BoardList boardList={boardListResponse.response.posts} />
-                <BoardPagination totalItemsCount={120} />
+                <PostsPagination totalItemsCount={120} />
             </div>
             <UnifiedBoardAddButton />
         </>

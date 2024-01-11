@@ -137,3 +137,10 @@ body {
 .ql-container {
     border: none !important;
 }
+
+.quill > .ql-container > .ql-editor.ql-blank::before {
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+    font-style: normal;
+    color: #a9a9a9
+}

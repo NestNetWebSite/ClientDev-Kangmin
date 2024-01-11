@@ -5,9 +5,9 @@ import { useQuery } from '@tanstack/react-query';
 import useExamSearchFilterStore from '../../../_stores/useExamSearchFilterStore';
 import SearchFilterArea from './_components/SearchFilterArea';
 import BoardList from './_components/BoardList';
-import BoardPagination from '../_components/BoardPagination';
+import PostsPagination from '../_components/PostsPagination';
 import ExamBoardAddButton from './_components/ExamBoardAddButton';
-import type { ExamBoardListResponse } from './types';
+import getExamPosts from './_lib/getExamPosts';
 
 interface ExamSearchFilter {
     year: number;
@@ -17,102 +17,11 @@ interface ExamSearchFilter {
     professor: string;
 }
 
-const boardListResponse: ExamBoardListResponse = {
-    response: {
-        totalSize: 20,
-        posts: [
-            {
-                id: 103,
-                subject: 'd',
-                professor: 'd',
-                year: 2023,
-                semester: 2,
-                examType: 'MID',
-                userName: '테스트',
-            },
-            {
-                id: 92,
-                subject: '자료구조',
-                professor: '이의종',
-                year: 2023,
-                semester: 2,
-                examType: 'MID',
-                userName: '매니저',
-            },
-            {
-                id: 91,
-                subject: '자료구조',
-                professor: '이의종',
-                year: 2023,
-                semester: 2,
-                examType: 'MID',
-                userName: '매니저',
-            },
-            {
-                id: 81,
-                subject: '자료구조',
-                professor: '이의종',
-                year: 2023,
-                semester: 1,
-                examType: 'FINAL',
-                userName: '매니저',
-            },
-            {
-                id: 79,
-                subject: '자료구조',
-                professor: '이의종',
-                year: 2023,
-                semester: 1,
-                examType: 'FINAL',
-                userName: '매니저',
-            },
-            {
-                id: 47,
-                subject: '자료구조',
-                professor: '이의종',
-                year: 2023,
-                semester: 1,
-                examType: 'FINAL',
-                userName: '테스트',
-            },
-            {
-                id: 35,
-                subject: '객체지향프로그래',
-                professor: '최경',
-                year: 2023,
-                semester: 1,
-                examType: 'FINAL',
-                userName: '테스트',
-            },
-            {
-                id: 34,
-                subject: '운영체제',
-                professor: '조희승',
-                year: 2023,
-                semester: 1,
-                examType: 'MID',
-                userName: '테스트',
-            },
-            {
-                id: 33,
-                subject: '운영체제',
-                professor: '조희승',
-                year: 2023,
-                semester: 1,
-                examType: 'FINAL',
-                userName: '테스트',
-            },
-        ],
-    },
-    error: null,
-};
-
 export default function Component() {
     const { examSearchFilter, filterReset } = useExamSearchFilterStore();
     const [currentSearchFilter, setCurrentSearchFilter] = useState(examSearchFilter);
     const [searchParams] = useSearchParams();
     const currentPage = Number(searchParams.get('page') ?? 1);
-    const { year, semester, examType, subject, professor } = currentSearchFilter;
 
     const updateCurrentSearchFilter = useCallback((newSearchFilter: ExamSearchFilter) => {
         setCurrentSearchFilter(newSearchFilter);
@@ -127,17 +36,11 @@ export default function Component() {
         };
     }, []);
 
-    useQuery({
-        queryKey: [
-            'examList ',
-            `filter -> year: ${year}, semester: ${semester}, examType: ${examType}, subject: ${subject}, professor: ${professor}, currentPage: ${currentPage}`,
-        ],
-        queryFn() {
-            return Promise.resolve(Math.trunc(Math.random() * 100000));
-        },
+    const { data } = useQuery({
+        queryKey: ['examList', { ...examSearchFilter, currentPage }],
+        queryFn: getExamPosts,
         retry: false,
         refetchOnWindowFocus: false,
-        gcTime: 0,
     });
 
     return (
@@ -147,8 +50,8 @@ export default function Component() {
                     currentSearchFilter={currentSearchFilter}
                     updateCurrentSearchFilter={updateCurrentSearchFilter}
                 />
-                <BoardList boardList={boardListResponse.response.posts} />
-                <BoardPagination totalItemsCount={120} />
+                <BoardList boardList={data?.examPosts} />
+                <PostsPagination totalItemsCount={120} />
             </div>
             <ExamBoardAddButton />
         </>
