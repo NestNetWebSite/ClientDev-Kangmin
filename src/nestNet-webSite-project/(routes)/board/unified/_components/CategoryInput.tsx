@@ -40,6 +40,7 @@ export default function CategoryInput() {
                     return (
                         <Select
                             isSearchable={false}
+                            inputId={'categoryInput'}
                             placeholder={'필수 선택'}
                             defaultValue={field.value ? unifiedPostTypeOptions.find(option => option.value) : null}
                             options={unifiedPostTypeOptions}

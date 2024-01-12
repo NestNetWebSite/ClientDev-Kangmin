@@ -3,8 +3,8 @@ import { nanoid } from 'nanoid';
 import { ChangeEventHandler, useCallback, useState } from 'react';
 import { useLoaderData, useNavigate, useParams } from 'react-router-dom';
 import { FormProvider, SubmitHandler, useForm } from 'react-hook-form';
-import FileUpload from '../../../_components/FileUpload';
-import PostInputs from '../../../_components/PostInputs';
+import FileUpload from '../../../../../_components/FileUpload';
+import PostInputs from '../../../../../_components/PostInputs';
 import ExamInfoInputs from '../../_components/ExamInfoInputs';
 
 interface ExistingBoardInfo {

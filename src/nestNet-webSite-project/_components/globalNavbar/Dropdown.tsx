@@ -27,7 +27,6 @@ export default function Dropdown({ isDropdownOpen, onDropdownClose, navItems }: 
 
         document.addEventListener('click', handleOutsideClick);
         return () => {
-            console.log('in effect');
             document.removeEventListener('click', handleOutsideClick);
         };
     });
@@ -42,7 +41,7 @@ export default function Dropdown({ isDropdownOpen, onDropdownClose, navItems }: 
                 event.stopPropagation();
             }}
         >
-            {navItems.map((subItem) => {
+            {navItems.map(subItem => {
                 return (
                     <li
                         key={subItem.label}

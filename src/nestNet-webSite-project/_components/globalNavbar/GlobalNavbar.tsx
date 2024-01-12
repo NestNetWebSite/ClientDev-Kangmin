@@ -57,9 +57,9 @@ const navItemsInformation: { label: string; pathname?: string; navItems?: NavIte
     {
         label: '생활',
         navItems: [
-            { label: '공지사항', pathname: '/life/notice', icon: <LiaExclamationSolid className={'h-6 w-6'} /> },
-            { label: '자기 소개', pathname: '/life/introduction', icon: <FaChalkboardUser className={'h-6 w-6'} /> },
-            { label: '출석부', pathname: '/life/attendance', icon: <LiaAddressBookSolid className={'h-6 w-6'} /> },
+            { label: '공지사항', pathname: '/(life)/notice', icon: <LiaExclamationSolid className={'h-6 w-6'} /> },
+            { label: '자기 소개', pathname: '/(life)/introduction', icon: <FaChalkboardUser className={'h-6 w-6'} /> },
+            { label: '출석부', pathname: '/(life)/attendance', icon: <LiaAddressBookSolid className={'h-6 w-6'} /> },
         ],
     },
 

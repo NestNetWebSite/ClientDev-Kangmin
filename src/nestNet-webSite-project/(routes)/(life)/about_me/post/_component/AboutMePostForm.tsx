@@ -2,54 +2,46 @@ import axios from 'axios';
 import { nanoid } from 'nanoid';
 import { ChangeEventHandler, useCallback, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useForm, SubmitHandler, FormProvider } from 'react-hook-form';
+import { FormProvider, SubmitHandler, useForm } from 'react-hook-form';
 import PostInputs from '../../../../../_components/PostInputs';
-import CategoryInput from '../../_components/CategoryInput';
+import ProfileImageManagement from '../../_components/ProfileImageManagement';
 import FileUpload from '../../../../../_components/FileUpload';
 
 interface Inputs {
     title: string;
     bodyContent: string;
-    unifiedPostType: string;
+    profileImage: FileList;
 }
 
-interface FileInfo {
+interface FileData {
     id: string;
     file: File;
 }
 
-export default function UnifiedBoardPostForm() {
-    const [fileInformation, setFileInformation] = useState<FileInfo[]>([]);
+export default function AboutMePostForm() {
+    const [fileInformation, setFileInformation] = useState<FileData[]>([]);
+
     const navigate = useNavigate();
-    const formMethods = useForm<Inputs>({ mode: 'onBlur', defaultValues: { bodyContent: '' } });
+    const formMethods = useForm<Inputs>({
+        mode: 'onBlur',
+        defaultValues: { bodyContent: '' },
+    });
 
     const handleFileInputChange: ChangeEventHandler<HTMLInputElement> = useCallback(event => {
-        const newFileInformation: FileInfo[] = Array.from(event.target.files).map(file => ({
+        const newFileInformation: FileData[] = Array.from(event.target.files).map(file => ({
             id: nanoid(),
             file,
         }));
         setFileInformation(prevState => [...prevState, ...newFileInformation]);
     }, []);
 
-    const handleFileDeleteButtonClick = useCallback((targetFileInfo: FileInfo) => {
+    const handleFileDeleteButtonClick = useCallback((targetFileInfo: FileData) => {
         setFileInformation(prevState => prevState.filter(fileInfo => fileInfo.id !== targetFileInfo.id));
     }, []);
 
-    const onSubmit: SubmitHandler<Inputs> = data => {
-        const formData = new FormData();
-        const blob = new Blob([JSON.stringify(data)], { type: 'application/json' });
-        formData.append('data', blob);
-
-        fileInformation.forEach(fileInfo => formData.append('file', fileInfo.file));
-
-        axios
-            .post(`${process.env.BACKEND_URL}/unified-post/post`, formData, {
-                withCredentials: true,
-                headers: { 'Content-Type': 'multipart/form-data' },
-            })
-            .then(() => window.alert('게시글을 작성하였습니다.'))
-            .catch(error => window.alert(error))
-            .finally(() => navigate('/board/unified'));
+    const onSubmit: SubmitHandler<Inputs> = async data => {
+        await new Promise(resolve => setTimeout(() => resolve(1000), 10 * 1000));
+        console.log(data);
     };
 
     return (
@@ -61,7 +53,7 @@ export default function UnifiedBoardPostForm() {
                 <div
                     className={'mt-8 flex h-fit w-2/6 flex-col rounded-3xl border border-gray-200 px-6 py-5 shadow-md'}
                 >
-                    <CategoryInput />
+                    <ProfileImageManagement />
                     <FileUpload
                         fileInformation={fileInformation}
                         onFileInputChange={handleFileInputChange}
@@ -69,9 +61,10 @@ export default function UnifiedBoardPostForm() {
                     />
                     <button
                         className={
-                            'w-full rounded-2xl bg-slate-950 p-3 text-white transition-all hover:bg-slate-950/[.85]'
+                            'w-full rounded-2xl bg-slate-950 p-3 text-white transition-all enabled:cursor-pointer enabled:hover:bg-slate-950/[.85] disabled:cursor-default disabled:opacity-50'
                         }
                         type={'submit'}
+                        disabled={formMethods.formState.isSubmitting}
                     >
                         <span className={'font-semibold '}>게시하기</span>
                     </button>

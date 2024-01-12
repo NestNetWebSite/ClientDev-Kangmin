@@ -5,7 +5,7 @@ import { useQuery } from '@tanstack/react-query';
 import useExamSearchFilterStore from '../../../_stores/useExamSearchFilterStore';
 import SearchFilterArea from './_components/SearchFilterArea';
 import BoardList from './_components/BoardList';
-import PostsPagination from '../_components/PostsPagination';
+import PostsPagination from '../../../_components/PostsPagination';
 import ExamBoardAddButton from './_components/ExamBoardAddButton';
 import getExamPosts from './_lib/getExamPosts';
 

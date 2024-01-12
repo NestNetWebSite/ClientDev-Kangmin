@@ -2,7 +2,7 @@ import { useSearchParams } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import BoardCategories from './_components/BoardCategories';
 import BoardList from './_components/BoardList';
-import PostsPagination from '../_components/PostsPagination';
+import PostsPagination from '../../../_components/PostsPagination';
 import UnifiedBoardAddButton from './_components/UnifiedBoardAddButton';
 import type { UnifiedBoardListResponse } from './types';
 

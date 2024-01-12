@@ -21,6 +21,8 @@ import UnifiedBoardModifyPage, { unifiedBoardDataLoader } from './(routes)/board
 import ExamBoardPage from './(routes)/board/exam/page';
 import ExamBoardPostPage from './(routes)/board/exam/post/page';
 import ExamBoardModifyPage, { examBoardDataLoader } from './(routes)/board/exam/modify/page';
+import AboutMePostPage from './(routes)/(life)/about_me/post/page';
+import UserActivityPage from './(routes)/user/activity/page';
 import ErrorPage403 from './(routes)/error/HTTP 403/index';
 
 const router = createBrowserRouter([
@@ -49,8 +51,8 @@ const router = createBrowserRouter([
             {
                 element: <UserPage />,
                 children: [
-                    { path: '/user/:userId?', element: <>나의 활동</> },
-                    { path: '/user/:userId?/activity', element: <>나의 활동</> },
+                    { path: '/user/:userId?', element: <UserActivityPage /> },
+                    { path: '/user/:userId?/activity', element: <UserActivityPage /> },
                     { path: '/user/:userId?/study', element: <>스터디 관리</> },
                 ],
             },
@@ -76,6 +78,7 @@ const router = createBrowserRouter([
             { path: '/board/exam/:id', element: <BoardInfoPage /> },
             { path: '/board/exam/post', element: <ExamBoardPostPage /> },
             { path: '/board/exam/modify/:boardId', element: <ExamBoardModifyPage />, loader: examBoardDataLoader },
+            { path: '/about_me/post', element: <AboutMePostPage /> },
             { path: '/error/unauthorized', element: <ErrorPage403 /> },
         ],
     },

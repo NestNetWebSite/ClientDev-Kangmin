@@ -2,10 +2,10 @@ import axios from 'axios';
 import { nanoid } from 'nanoid';
 import { ChangeEventHandler, useCallback, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { FormProvider, useForm, SubmitHandler } from 'react-hook-form';
+import { FormProvider, SubmitHandler, useForm } from 'react-hook-form';
 import ExamInfoInputs from '../../_components/ExamInfoInputs';
-import FileUpload from '../../../_components/FileUpload';
-import PostInputs from '../../../_components/PostInputs';
+import FileUpload from '../../../../../_components/FileUpload';
+import PostInputs from '../../../../../_components/PostInputs';
 
 interface Inputs {
     subject: string;
