@@ -1,9 +1,9 @@
 import { useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Post } from '../types';
-import Board from './Board';
+import ExamBoard from './ExamBoard';
 
-export default function BoardList({ boardList }: { boardList: Post[] }) {
+export default function ExamBoardList({ boardList }: { boardList: Post[] }) {
     const navigate = useNavigate();
     const handleBoardClick = useCallback((id: number) => {
         navigate(`/board/exam/${id}`);
@@ -13,7 +13,7 @@ export default function BoardList({ boardList }: { boardList: Post[] }) {
         <main className='grid w-full grid-cols-3 gap-x-6 gap-y-7 p-4'>
             {boardList?.map(board => {
                 return (
-                    <Board
+                    <ExamBoard
                         key={board.id}
                         id={board.id}
                         year={board.year}

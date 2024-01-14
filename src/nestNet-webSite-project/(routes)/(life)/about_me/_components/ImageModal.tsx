@@ -3,12 +3,12 @@ import { IoMdClose } from 'react-icons/io';
 
 interface Props {
     isModalOpen: boolean;
-    profileImageSrc: string;
+    imageSrc: string;
 
     onModalCloseButtonClick(): void;
 }
 
-export default function ProfileImageModal({ isModalOpen, profileImageSrc, onModalCloseButtonClick }: Props) {
+export default function ImageModal({ isModalOpen, imageSrc, onModalCloseButtonClick }: Props) {
     return (
         <Modal
             isOpen={isModalOpen}
@@ -25,7 +25,7 @@ export default function ProfileImageModal({ isModalOpen, profileImageSrc, onModa
             >
                 <IoMdClose className={'h-10 w-10'} />
             </button>
-            <img className={'w-full'} src={profileImageSrc} alt={'userProfileImage'} />
+            <img className={'w-full'} src={imageSrc} alt={'userProfileImage'} />
         </Modal>
     );
 }

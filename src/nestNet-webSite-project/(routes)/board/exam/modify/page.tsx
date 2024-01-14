@@ -1,4 +1,4 @@
-import { pick } from 'lodash';
+import getSingleExamBoardInfo from './_lib/getSingleExamBoardInfo';
 import ExamBoardModifyForm from './_components/ExamBoardModifyForm';
 
 const response = {
@@ -58,23 +58,9 @@ const response = {
 };
 
 export async function examBoardDataLoader() {
+    const boardId = window.location.pathname.split('/').at(-1);
     try {
-        return await new Promise(resolve => {
-            setTimeout(() => {
-                resolve({
-                    ...pick(response.response['post-data'], [
-                        'title',
-                        'bodyContent',
-                        'subject',
-                        'professor',
-                        'year',
-                        'semester',
-                        'examType',
-                    ]),
-                    existingFileData: response.response['file-data'],
-                });
-            });
-        });
+        return await getSingleExamBoardInfo(boardId);
     } catch (error) {
         return null;
     }

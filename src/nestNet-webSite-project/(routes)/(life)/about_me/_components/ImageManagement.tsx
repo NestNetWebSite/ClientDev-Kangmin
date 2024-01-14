@@ -1,16 +1,16 @@
 import { useMemo, useRef, useState } from 'react';
 import { Controller, useFormContext } from 'react-hook-form';
-import getProfilePreviewImgSrc from '../_lib/getProfilePreviewImgSrc';
-import ProfilePreviewImage from './ProfilePreviewImage';
-import ProfileImageModal from './ProfileImageModal';
+import getPreviewImgSrc from '../_lib/getPreviewImgSrc';
+import ProfilePreviewImage from './PreviewImage';
+import ImageModal from './ImageModal';
 
 interface Inputs {
     title: string;
     bodyContent: string;
-    profileImage: FileList;
+    image: FileList;
 }
 
-export default function ProfileImageManagement() {
+export default function ImageManagement() {
     const {
         control,
         formState: { errors },
@@ -19,19 +19,19 @@ export default function ProfileImageManagement() {
     } = useFormContext<Inputs>();
 
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const profileImageInputRef = useRef<HTMLInputElement>(null);
+    const imageInputRef = useRef<HTMLInputElement>(null);
 
-    const imageFileList = watch('profileImage');
-    const profilePreviewImgSrc = useMemo(() => {
-        return getProfilePreviewImgSrc(imageFileList);
+    const imageFileList = watch('image');
+    const previewImgSrc = useMemo(() => {
+        return getPreviewImgSrc(imageFileList);
     }, [imageFileList]);
 
     return (
-        <div className={'flex flex-col'}>
+        <div className={'mb-7 flex flex-col'}>
             <div className={'flex w-full flex-col'}>
                 <Controller
                     control={control}
-                    name={'profileImage'}
+                    name={'image'}
                     rules={{
                         validate: {
                             invalidFileExtension(value) {
@@ -64,7 +64,7 @@ export default function ProfileImageManagement() {
                                     field.onChange(event.target.files);
                                     field.onBlur();
                                 }}
-                                ref={profileImageInputRef}
+                                ref={imageInputRef}
                             />
                         );
                     }}
@@ -72,7 +72,7 @@ export default function ProfileImageManagement() {
                 <div className={'mb-2 flex flex-col gap-y-1'}>
                     <span className={'mx-2.5 font-bold text-slate-950'}>프로필 이미지 설정</span>
                 </div>
-                {profilePreviewImgSrc !== '' ? (
+                {previewImgSrc !== '' ? (
                     <>
                         <div
                             className={'flex h-[23.43rem] w-full flex-col items-center justify-center rounded-3xl'}
@@ -80,7 +80,7 @@ export default function ProfileImageManagement() {
                                 setIsModalOpen(true);
                             }}
                         >
-                            <ProfilePreviewImage profilePreviewImgSrc={profilePreviewImgSrc} />
+                            <ProfilePreviewImage previewImgSrc={previewImgSrc} />
                         </div>
                         <span className={'my-3 inline-block text-center text-sm text-gray-500'}>
                             ※ 이미지 클릭시 전체 이미지를 볼 수 있어요.
@@ -92,7 +92,7 @@ export default function ProfileImageManagement() {
                                 }
                                 type={'button'}
                                 onClick={() => {
-                                    profileImageInputRef.current.click();
+                                    imageInputRef.current.click();
                                 }}
                             >
                                 재업로드
@@ -103,7 +103,7 @@ export default function ProfileImageManagement() {
                                 }
                                 type={'button'}
                                 onClick={() => {
-                                    resetField('profileImage');
+                                    resetField('image');
                                 }}
                             >
                                 사진 삭제
@@ -113,25 +113,25 @@ export default function ProfileImageManagement() {
                 ) : (
                     <div
                         className={`relative h-[23.4286rem] w-full rounded-3xl border-2 border-dotted text-center ${
-                            errors?.profileImage?.message ? 'border-red-500' : 'border-gray-300'
+                            errors?.image?.message ? 'border-red-500' : 'border-gray-300'
                         } transition-all`}
                     >
-                        {errors?.profileImage?.message ? (
-                            errors?.profileImage?.type === 'invalidFileExtension' && (
+                        {errors?.image?.message ? (
+                            errors?.image?.type === 'invalidFileExtension' && (
                                 <div
                                     className={
                                         'absolute left-1/2 top-1/2 flex w-full -translate-x-1/2 -translate-y-1/2 flex-col gap-y-0.5 text-sm text-red-500'
                                     }
                                 >
-                                    <span>※ {errors.profileImage.message}</span>
+                                    <span>※ {errors.image.message}</span>
                                     <div>
                                         <span
                                             className={
                                                 'inline-block cursor-pointer rounded-2xl px-2 py-1 transition-all hover:bg-red-100'
                                             }
                                             onClick={() => {
-                                                profileImageInputRef.current.value = null;
-                                                profileImageInputRef.current.click();
+                                                imageInputRef.current.value = null;
+                                                imageInputRef.current.click();
                                             }}
                                         >
                                             재업로드
@@ -142,7 +142,7 @@ export default function ProfileImageManagement() {
                                                 'inline-block cursor-pointer rounded-2xl px-2 py-1 transition-all hover:bg-red-100'
                                             }
                                             onClick={() => {
-                                                resetField('profileImage');
+                                                resetField('image');
                                             }}
                                         >
                                             프로필 사진 사용 안하기
@@ -156,8 +156,8 @@ export default function ProfileImageManagement() {
                                     'absolute left-1/2 top-1/2 w-72 -translate-x-1/2 -translate-y-1/2 cursor-pointer text-sm text-gray-500'
                                 }
                                 onClick={() => {
-                                    profileImageInputRef.current.value = null;
-                                    profileImageInputRef.current.click();
+                                    imageInputRef.current.value = null;
+                                    imageInputRef.current.click();
                                 }}
                             >
                                 프로필 이미지가 없습니다.
@@ -168,9 +168,9 @@ export default function ProfileImageManagement() {
                     </div>
                 )}
             </div>
-            <ProfileImageModal
+            <ImageModal
                 isModalOpen={isModalOpen}
-                profileImageSrc={profilePreviewImgSrc}
+                imageSrc={previewImgSrc}
                 onModalCloseButtonClick={() => {
                     setIsModalOpen(false);
                 }}

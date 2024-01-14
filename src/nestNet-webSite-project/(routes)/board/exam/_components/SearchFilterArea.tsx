@@ -1,13 +1,12 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { useQueryClient } from '@tanstack/react-query';
-import { BiFilter, BiSearch } from 'react-icons/bi';
-import { debounce, isEqual } from 'lodash';
+import { isEqual } from 'lodash';
 import useExamSearchFilterStore from '../../../../_stores/useExamSearchFilterStore';
 import SearchFilterModal from './SearchFilterModal';
 
 interface ExamSearchFilter {
-    year: number;
+    year: string;
     semester: string;
     examType: string;
     subject: string;
@@ -23,52 +22,83 @@ interface Props {
 export default function SearchFilterArea({ currentSearchFilter, updateCurrentSearchFilter }: Props) {
     const queryClient = useQueryClient();
 
-    const { examSearchFilter } = useExamSearchFilterStore();
+    const { filterReset } = useExamSearchFilterStore();
     const [isModalOpen, setIsModalOpen] = useState(false);
 
-    const [searchParams, setSearchParams] = useSearchParams();
-    const currentPage = Number(searchParams.get('page') ?? 1);
+    const [_1, setSearchParams] = useSearchParams();
 
     useEffect(() => {
         if (isModalOpen) {
-            document.body.style.overflow = 'hidden';
+            document.body.style.overflowY = 'hidden';
         } else {
-            document.body.style.overflow = 'scroll';
+            document.body.style.overflowY = 'scroll';
         }
     }, [isModalOpen]);
 
-    const handleSearchButtonClick = useCallback(
-        debounce(() => {
-            if (isEqual(examSearchFilter, currentSearchFilter) && currentPage === 1) {
-                queryClient.invalidateQueries({ queryKey: ['examList '] }).catch(error => window.alert(error));
-            } else if (isEqual(examSearchFilter, currentSearchFilter) && currentPage !== 1) {
-                setSearchParams({ page: '1' });
-            } else {
-                updateCurrentSearchFilter(examSearchFilter);
-                setSearchParams({ page: '1' });
-            }
-        }, 190),
-        [examSearchFilter, currentSearchFilter, currentPage],
-    );
+    // const handleSearchButtonClick = useCallback(
+    //     debounce(() => {
+    //         if (isEqual(examSearchFilter, currentSearchFilter) && currentPage === 1) {
+    //             queryClient.invalidateQueries({ queryKey: ['examList'] }).catch(error => window.alert(error));
+    //         } else if (isEqual(examSearchFilter, currentSearchFilter) && currentPage !== 1) {
+    //             setSearchParams({ page: '1' });
+    //         } else {
+    //             updateCurrentSearchFilter(examSearchFilter);
+    //             setSearchParams({ page: '1' });
+    //         }
+    //     }, 190),
+    //     [examSearchFilter, currentSearchFilter, currentPage],
+    // );
 
     return (
-        <div className={'mx-8'}>
-            <button
-                onClick={() => {
-                    setIsModalOpen(true);
+        <div
+            className={
+                'sticky top-0 z-[1] flex w-full items-center gap-x-1 border-b border-gray-200 bg-white/30 px-6 py-4 backdrop-blur-md '
+            }
+        >
+            <div className={'relative'}>
+                <button
+                    onClick={event => {
+                        event.stopPropagation();
+                        setIsModalOpen(true);
+                    }}
+                    className={
+                        'mr-5 box-content rounded-3xl bg-slate-950 px-4 py-3 text-sm text-white transition-all hover:bg-slate-950/[.85]'
+                    }
+                >
+                    검색 필터
+                </button>
+            </div>
+            <span
+                onClick={event => {
+                    event.stopPropagation();
+                    if (
+                        isEqual(
+                            {
+                                examType: '',
+                                year: '0',
+                                semester: '0',
+                                subject: '',
+                                professor: '',
+                            },
+                            currentSearchFilter,
+                        )
+                    ) {
+                        return;
+                    }
+                    setSearchParams({ page: '1' });
+                    filterReset();
+                    updateCurrentSearchFilter({
+                        examType: '',
+                        year: '0',
+                        semester: '0',
+                        subject: '',
+                        professor: '',
+                    });
                 }}
-                className={'mr-5 box-content rounded-full p-1 duration-300 hover:scale-105 hover:bg-gray-100'}
+                className={'cursor-pointer rounded-3xl p-2 font-bold transition-all hover:bg-black/[.05]'}
             >
-                <BiFilter className={'h-10 w-10'} />
-            </button>
-            <button
-                onClick={() => {
-                    handleSearchButtonClick();
-                }}
-                className={'box-content rounded-full p-1 duration-300 hover:scale-105 hover:bg-gray-100'}
-            >
-                <BiSearch className={'h-9 w-9'} />
-            </button>
+                검색 필터 초기화
+            </span>
             <SearchFilterModal
                 isModalOpen={isModalOpen}
                 onModalCloseButtonClick={() => {
@@ -77,6 +107,7 @@ export default function SearchFilterArea({ currentSearchFilter, updateCurrentSea
                 closeModal={() => {
                     setIsModalOpen(false);
                 }}
+                updateCurrentSearchFilter={updateCurrentSearchFilter}
             />
         </div>
     );

@@ -17,56 +17,50 @@ export default function BoardLikeButton({ boardId, isMemberLiked }: Props) {
     // (둘다 테스트해봄)
     const [oldData, setOldData] = useState<boolean | undefined>(undefined);
     const { data } = useQuery({
-        queryKey: ['test'],
+        queryKey: ['likeState'],
         queryFn() {
-            return axios.get('http://localhost:3001/users/aaaa1234').then(response => {
-                setOldData(response.data.isMemberLiked);
-                return response.data.isMemberLiked;
-            });
+            return Promise.resolve(isMemberLiked);
         },
-        retry: 0,
+        retry: false,
         refetchOnWindowFocus: false,
-        gcTime: 0,
+        refetchOnMount: false,
     });
 
     const { mutate } = useMutation({
         mutationFn() {
-            const likeState = queryClient.getQueryData(['test']);
-            return axios.patch(
-                'http://localhost:3001/users/aaaa1234',
-                { isMemberLiked: likeState },
-                { withCredentials: true },
+            const likeState = queryClient.getQueryData(['likeState']);
+            return axios.post(
+                `${process.env.REACT_APP_BACKEND_URL}:8080/post/${likeState ? 'cancel-like' : 'like'}`,
+                { postId: boardId },
+                { withCredentials: true, headers: { Authorization: localStorage.getItem('access_token') } },
             );
         },
 
         onSuccess() {
-            return queryClient.invalidateQueries({ queryKey: ['test'] });
+            return queryClient.invalidateQueries({ queryKey: ['post'] });
         },
 
         onError() {
-            queryClient.setQueryData(['test'], oldData);
-            return queryClient.invalidateQueries({ queryKey: ['test'] });
+            queryClient.setQueryData(['likeState'], oldData);
+            return queryClient.invalidateQueries({ queryKey: ['post'] });
         },
     });
 
     const debouncedMutate = debounce(mutate, 1000);
 
     const handleButtonClick = useCallback(async (): Promise<void> => {
-        await queryClient.cancelQueries({ queryKey: ['test'] });
-        const previousLikeState = queryClient.getQueryData(['test']);
-        queryClient.setQueryData(['test'], !previousLikeState);
+        await queryClient.cancelQueries({ queryKey: ['likeState'] });
+        const previousLikeState = queryClient.getQueryData(['likeState']);
+        queryClient.setQueryData(['likeState'], !previousLikeState);
+        console.log(1);
         debouncedMutate();
     }, []);
-
-    if (data === undefined) {
-        return <></>;
-    }
 
     return (
         <button
             type={'button'}
             className={
-                'flex w-32 items-center justify-center gap-x-3.5 rounded-3xl border border-gray-100 py-3 shadow-lg transition-all hover:-translate-y-1 hover:shadow-xl'
+                'flex w-32 items-center justify-center gap-x-3.5 rounded-3xl border border-gray-100 py-3 shadow-lg transition-all hover:scale-105'
             }
             onClick={() => {
                 handleButtonClick().catch(reason => console.error(reason));

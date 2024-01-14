@@ -2,7 +2,7 @@ import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
 
 interface ExamSearchFilter {
-    year: number;
+    year: string;
     semester: string;
     examType: string;
     subject: string;
@@ -20,12 +20,12 @@ interface ExamSearchFilterState {
 const useExamSearchFilterStore = create<ExamSearchFilterState>()(
     persist(
         setState => ({
-            examSearchFilter: { year: 0, semester: '0', examType: '', subject: '', professor: '' },
+            examSearchFilter: { year: '0', semester: '0', examType: '', subject: '', professor: '' },
             filterUpdate(newSearchFilter) {
                 setState({ examSearchFilter: newSearchFilter });
             },
             filterReset() {
-                setState({ examSearchFilter: { year: 0, semester: '0', examType: '', subject: '', professor: '' } });
+                setState({ examSearchFilter: { year: '0', semester: '0', examType: '', subject: '', professor: '' } });
             },
         }),
         {

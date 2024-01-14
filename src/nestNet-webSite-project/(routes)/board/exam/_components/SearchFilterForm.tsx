@@ -1,17 +1,22 @@
 import { Controller, useForm, SubmitHandler } from 'react-hook-form';
-import { GrPowerReset } from 'react-icons/gr';
 import Select from 'react-select';
 import useExamSearchFilterStore from '../../../../_stores/useExamSearchFilterStore';
-import { useCallback } from 'react';
-import { LiaChalkboardTeacherSolid } from 'react-icons/lia';
-import { PiBooks } from 'react-icons/pi';
+import { useSearchParams } from 'react-router-dom';
 
-interface ExamSearchFilterInputs {
-    year: number;
+interface ExamSearchFilter {
+    year: string;
     semester: string;
     examType: string;
     subject: string;
     professor: string;
+}
+
+type ExamSearchFilterInputs = ExamSearchFilter;
+
+interface Props {
+    updateCurrentSearchFilter(newSearchFilter: ExamSearchFilter): void;
+
+    closeModal(): void;
 }
 
 const semesterSelectOptions = [
@@ -26,16 +31,10 @@ const examTypeSelectOptions = [
     { value: '', label: '선택안함.' },
 ];
 
-export default function SearchFilterForm({ closeModal }: { closeModal(): void }) {
+export default function SearchFilterForm({ updateCurrentSearchFilter, closeModal }: Props) {
     const { examSearchFilter, filterUpdate } = useExamSearchFilterStore();
-    const {
-        control,
-        register,
-        reset,
-        handleSubmit,
-        formState: { errors },
-    } = useForm<ExamSearchFilterInputs>({
-        mode: 'onBlur',
+    const [_1, setSearchParams] = useSearchParams();
+    const { control, register, reset, handleSubmit } = useForm<ExamSearchFilterInputs>({
         defaultValues: {
             year: examSearchFilter.year,
             semester: examSearchFilter.semester,
@@ -45,12 +44,9 @@ export default function SearchFilterForm({ closeModal }: { closeModal(): void })
         },
     });
 
-    const handleFormResetButtonClick = useCallback(() => {
-        reset({ year: 0, semester: '0', examType: '', subject: '', professor: '' });
-    }, []);
-
     const onSubmit: SubmitHandler<ExamSearchFilterInputs> = data => {
         filterUpdate(data);
+        updateCurrentSearchFilter(data);
         closeModal();
     };
 
@@ -58,46 +54,43 @@ export default function SearchFilterForm({ closeModal }: { closeModal(): void })
         <form className={'w-full'} onSubmit={handleSubmit(onSubmit)}>
             <div className={'w-full'}>
                 <div className={'mb-10 flex w-full flex-col'}>
-                    <label className={'mx-2 mb-2 font-semibold text-gray-500'} htmlFor={'subjectInput'}>
+                    <label className={'mx-3 mb-2 w-fit font-semibold text-slate-950'} htmlFor={'subjectInput'}>
                         강좌명
                     </label>
-                    <div className={'flex w-full items-center rounded-lg border-2 border-gray-100 bg-gray-100 p-1'}>
-                        <PiBooks className='ml-1 h-7 w-7' />
-                        <input
-                            className={'flex-1 rounded-lg bg-gray-100 px-3 py-2 focus:outline-none'}
-                            id={'subjectInput'}
-                            type={'text'}
-                            autoComplete={'off'}
-                            autoCapitalize={'off'}
-                            {...register('subject')}
-                        />
-                    </div>
+                    <input
+                        className={
+                            'flex-1 rounded-2xl px-4 py-3.5 outline outline-1 outline-gray-300 transition-all focus:outline-blue-500'
+                        }
+                        id={'subjectInput'}
+                        type={'text'}
+                        autoComplete={'off'}
+                        autoCapitalize={'off'}
+                        {...register('subject')}
+                    />
                 </div>
                 <div className={'flex w-full gap-x-6'}>
                     <div className={'w-1/2'}>
-                        <div className={'mb-6 flex w-full flex-col'}>
-                            <label className={'mx-2 mb-2 font-semibold text-gray-500'} htmlFor={'yearInput'}>
+                        <div className={'mb-6 flex flex-col'}>
+                            <label className={'mx-3 mb-2 w-fit font-semibold text-slate-950'} htmlFor={'yearInput'}>
                                 연도
                             </label>
-                            <div
+                            <input
                                 className={
-                                    'flex w-full items-center rounded-lg border-2 border-gray-100 bg-gray-100 p-1'
+                                    'flex-1 rounded-2xl px-4 py-3.5 outline outline-1 outline-gray-300 transition-all focus:outline-blue-500'
                                 }
-                            >
-                                <LiaChalkboardTeacherSolid className='ml-1 h-7 w-7' />
-                                <input
-                                    className={'flex-1 rounded-lg bg-gray-100 px-3 py-2 focus:outline-none'}
-                                    id={'yearInput'}
-                                    type={'number'}
-                                    min={0}
-                                    autoComplete={'off'}
-                                    autoCapitalize={'off'}
-                                    {...register('year')}
-                                />
-                            </div>
+                                id={'yearInput'}
+                                type={'number'}
+                                min={0}
+                                autoComplete={'off'}
+                                autoCapitalize={'off'}
+                                onWheel={event => {
+                                    event.currentTarget.blur();
+                                }}
+                                {...register('year')}
+                            />
                         </div>
                         <div className={'mb-10 flex flex-col'}>
-                            <label className={'mx-2 mb-2 font-semibold text-gray-500'} htmlFor={'yearInput'}>
+                            <label className={'mx-3 mb-2 w-fit font-semibold text-slate-950'} htmlFor={'semesterInput'}>
                                 학기
                             </label>
                             <Controller
@@ -110,12 +103,13 @@ export default function SearchFilterForm({ closeModal }: { closeModal(): void })
                                             options={semesterSelectOptions}
                                             onChange={option => field.onChange(option.value)}
                                             ref={field.ref}
-                                            defaultValue={semesterSelectOptions.find(
-                                                option => option.value === field.value,
-                                            )}
+                                            inputId={'semesterInput'}
+                                            value={semesterSelectOptions.find(option => option.value === field.value)}
                                             classNames={{
-                                                control() {
-                                                    return '!rounded-lg !h-[52px] !border !border-gray-100 !bg-gray-100 !border-2 !text-sm !shadow-none';
+                                                control(state) {
+                                                    return `!rounded-2xl !h-[52px] !border !text-sm !shadow-none ${
+                                                        state.isFocused ? '!border-blue-500' : '!border-gray-300'
+                                                    } !transition-all`;
                                                 },
 
                                                 option() {
@@ -130,7 +124,7 @@ export default function SearchFilterForm({ closeModal }: { closeModal(): void })
                     </div>
                     <div className={'w-1/2'}>
                         <div className={'mb-6 flex flex-col'}>
-                            <label className={'mx-2 mb-2 font-semibold text-gray-500'} htmlFor={'yearInput'}>
+                            <label className={'mx-3 mb-2 w-fit font-semibold text-slate-950'} htmlFor={'examTypeInput'}>
                                 시험 종류
                             </label>
                             <Controller
@@ -143,12 +137,13 @@ export default function SearchFilterForm({ closeModal }: { closeModal(): void })
                                             options={examTypeSelectOptions}
                                             onChange={option => field.onChange(option.value)}
                                             ref={field.ref}
-                                            defaultValue={examTypeSelectOptions.find(
-                                                option => option.value === field.value,
-                                            )}
+                                            inputId={'examTypeInput'}
+                                            value={examTypeSelectOptions.find(option => option.value === field.value)}
                                             classNames={{
-                                                control() {
-                                                    return '!rounded-lg !h-[52px] !border !border-gray-100 !bg-gray-100 !border-2 !text-sm !shadow-none';
+                                                control(state) {
+                                                    return `!rounded-2xl !h-[52px] !border !text-sm !shadow-none ${
+                                                        state.isFocused ? '!border-blue-500' : '!border-gray-300'
+                                                    } !transition-all`;
                                                 },
 
                                                 option() {
@@ -161,41 +156,31 @@ export default function SearchFilterForm({ closeModal }: { closeModal(): void })
                             />
                         </div>
                         <div className={'flex w-full flex-col'}>
-                            <label className={'mx-2 mb-2 font-semibold text-gray-500'} htmlFor={'professorInput'}>
+                            <label
+                                className={'mx-3 mb-2 w-fit font-semibold text-slate-950'}
+                                htmlFor={'professorInput'}
+                            >
                                 교수명
                             </label>
-                            <div
+                            <input
                                 className={
-                                    'flex w-full items-center rounded-lg border-2 border-gray-100 bg-gray-100 p-1'
+                                    'flex-1 rounded-2xl px-4 py-3.5 outline outline-1 outline-gray-300 transition-all focus:outline-blue-500'
                                 }
-                            >
-                                <LiaChalkboardTeacherSolid className='ml-1 h-7 w-7' />
-                                <input
-                                    className={'flex-1 rounded-lg bg-gray-100 px-3 py-2 focus:outline-none'}
-                                    id={'professorInput'}
-                                    type={'text'}
-                                    autoComplete={'off'}
-                                    autoCapitalize={'off'}
-                                    {...register('professor')}
-                                />
-                            </div>
+                                id={'professorInput'}
+                                type={'text'}
+                                autoComplete={'off'}
+                                autoCapitalize={'off'}
+                                {...register('professor')}
+                            />
                         </div>
                     </div>
                 </div>
             </div>
-            <div className={'my-2 flex items-center justify-between'}>
-                <button
-                    className='box-content flex items-center rounded-3xl px-3 py-2 duration-300 hover:bg-gray-100'
-                    type={'button'}
-                    onClick={handleFormResetButtonClick}
-                >
-                    <GrPowerReset className={'mr-2 h-6 w-6'} />
-                    <span className={'font-semibold'}>초기화</span>
-                </button>
+            <div className={'my-2 flex items-center justify-end'}>
                 <button
                     type={'submit'}
                     className={
-                        'rounded-2xl bg-rose-800 px-6 py-2 font-semibold text-white shadow-md duration-300 hover:scale-105'
+                        'rounded-3xl bg-slate-950 px-12 py-3.5 font-semibold text-white transition-all hover:bg-slate-950/[.85]'
                     }
                 >
                     필터 적용

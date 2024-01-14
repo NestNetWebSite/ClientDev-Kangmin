@@ -17,17 +17,17 @@ export default function PostsPagination({ totalItemsCount }: { totalItemsCount: 
                     setSearchParams({ ...parsed, page: String(targetPage) });
                 }}
                 activePage={currentPage}
-                itemsCountPerPage={10}
-                pageRangeDisplayed={Math.ceil(totalItemsCount / 10)}
+                itemsCountPerPage={9}
+                pageRangeDisplayed={Math.ceil(totalItemsCount / 9)}
                 prevPageText={<AiOutlineLeft />}
                 firstPageText={<RiSkipLeftLine className={'h-6 w-6'} />}
                 nextPageText={<AiOutlineRight />}
                 lastPageText={<RiSkipRightLine className={'h-6 w-6'} />}
-                innerClass={'my-5 flex justify-center'}
+                innerClass={'py-5 flex justify-center'}
                 itemClass={
-                    'flex h-9 w-9 items-center justify-center rounded-full text-lg text-gray-500 [&:not(&.active)]:hover:text-black [&:not(&.active)]:hover:underline [&:not(&.active)]:hover:decoration-2 [&:not(&.active)]:hover:underline-offset-4'
+                    'flex h-9 w-9 items-center justify-center rounded-full text-lg text-gray-500 [&:not(&.active)]:hover:text-slate-950 [&:not(&.active)]:hover:underline [&:not(&.active)]:hover:decoration-2 [&:not(&.active)]:hover:underline-offset-4'
                 }
-                activeLinkClass={'font-bold text-rose-800 underline decoration-2 underline-offset-4'}
+                activeLinkClass={'font-bold text-slate-950 underline decoration-2 underline-offset-4'}
             />
         </div>
     );

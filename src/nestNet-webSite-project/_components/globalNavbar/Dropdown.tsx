@@ -1,5 +1,6 @@
-import { MouseEvent, ReactElement, useCallback, useEffect, useRef } from 'react';
+import { ReactElement, useCallback, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
+import useDropdown from '../../_hooks/useDropdown';
 
 interface Props {
     isDropdownOpen: boolean;
@@ -18,18 +19,7 @@ export default function Dropdown({ isDropdownOpen, onDropdownClose, navItems }: 
         onDropdownClose();
     }, []);
 
-    useEffect(() => {
-        const handleOutsideClick = (event: CustomEvent<MouseEvent>) => {
-            if (isDropdownOpen && !ulRef.current.contains(event.target as Node)) {
-                onDropdownClose();
-            }
-        };
-
-        document.addEventListener('click', handleOutsideClick);
-        return () => {
-            document.removeEventListener('click', handleOutsideClick);
-        };
-    });
+    useDropdown(ulRef, isDropdownOpen, onDropdownClose);
 
     return (
         <ul

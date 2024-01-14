@@ -39,9 +39,12 @@ export default function ExamBoardModifyForm() {
     const boardId = useParams().boardId;
 
     // @ts-ignore
-    const { title, bodyContent, subject, professor, year, semester, examType, existingFileData }: ExistingBoardInfo =
-        useLoaderData();
-    console.log(useLoaderData());
+    const { title, bodyContent, subject, professor, year, semester, examType } =
+        //@ts-ignore
+        useLoaderData().examCollectionPostDto;
+
+    // @ts-ignore
+    const existingFileData = useLoaderData().fileDtoList;
 
     const [fileInformation, setFileInformation] = useState<FileData[]>(
         existingFileData.map(file => ({
@@ -51,6 +54,7 @@ export default function ExamBoardModifyForm() {
         })),
     );
     const [existingFileIdList, setExistingFileIdList] = useState<number[]>(existingFileData.map(file => file.id));
+    console.log(existingFileIdList);
 
     const formMethods = useForm<Inputs>({
         mode: 'onBlur',
@@ -63,13 +67,15 @@ export default function ExamBoardModifyForm() {
     }, []);
 
     const handleFileDeleteButtonClick = useCallback((targetFileInfo: FileData) => {
-        if ('isOriginal' in targetFileInfo.file) {
+        if ('isOriginal' in targetFileInfo) {
+            console.log('1');
             setExistingFileIdList(prevState => prevState.filter(id => id !== targetFileInfo.id));
         }
+        console.log('2');
         setFileInformation(prevState => prevState.filter(fileData => fileData.id !== targetFileInfo.id));
     }, []);
 
-    const onSubmit: SubmitHandler<Inputs> = data => {
+    const onSubmit: SubmitHandler<Inputs> = async data => {
         const formData = new FormData();
         const blob = new Blob(
             [JSON.stringify({ ...data, semester: Number(data.semester), postCategory: 'EXAM', id: boardId })],
@@ -91,7 +97,16 @@ export default function ExamBoardModifyForm() {
 
         const fileIdListBlob = new Blob([JSON.stringify(existingFileIdList)], { type: 'application/json' });
         formData.append('file-id', fileIdListBlob);
-        console.log({ ...data, semester: Number(data.semester), postCategory: 'EXAM', id: boardId });
+        try {
+            await axios.post(`${process.env.REACT_APP_BACKEND_URL}:8080/exam-collection-post/modify`, formData, {
+                withCredentials: true,
+                headers: { Authorization: localStorage.getItem('access_token'), 'Content-Type': 'multipart/form-data' },
+            });
+            window.alert('수정되었습니다.');
+            navigate(`/board/exam/${boardId}`, { replace: true });
+        } catch (error) {
+            console.log(error);
+        }
     };
 
     return (

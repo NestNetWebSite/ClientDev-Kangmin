@@ -5,7 +5,7 @@ export default function ExamBoardAddButton() {
     const navigate = useNavigate();
     return (
         <button
-            className='fixed bottom-20 right-20 box-content rounded-full bg-rose-800 p-3 text-white shadow-md duration-300 hover:scale-110'
+            className='fixed bottom-20 right-20 box-content rounded-full bg-slate-950 p-3 text-white shadow-md transition-all hover:bg-slate-950/[.85]'
             onClick={() => {
                 navigate('/board/exam/post');
             }}

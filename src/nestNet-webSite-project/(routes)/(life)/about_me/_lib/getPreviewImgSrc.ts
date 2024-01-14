@@ -1,4 +1,4 @@
-export default function getProfilePreviewImgSrc(fileList: FileList | null | undefined) {
+export default function getPreviewImgSrc(fileList: FileList | null | undefined) {
     if (!fileList) {
         return '';
     }

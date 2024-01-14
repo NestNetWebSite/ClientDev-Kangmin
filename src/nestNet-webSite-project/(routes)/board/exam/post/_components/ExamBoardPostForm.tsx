@@ -44,7 +44,26 @@ export default function ExamBoardPostForm() {
 
     const onSubmit: SubmitHandler<Inputs> = async data => {
         data.semester = Number(data.semester);
-        console.log(data);
+        try {
+            const formData = new FormData();
+            const blob = new Blob([JSON.stringify({ ...data, postCategory: 'EXAM' })], { type: 'application/json' });
+
+            formData.append('data', blob);
+            fileInformation.forEach(fileInfo => formData.append('file', fileInfo.file));
+
+            await axios.post(`${process.env.REACT_APP_BACKEND_URL}:8080/exam-collection-post/post`, formData, {
+                withCredentials: true,
+                headers: {
+                    Authorization: localStorage.getItem('access_token'),
+                    'Content-Type': 'multipart/form-data',
+                },
+            });
+
+            window.alert('게시글 저장에 성공하였습니다.');
+            navigate('/board/exam');
+        } catch (error) {
+            console.log(error);
+        }
     };
 
     return (

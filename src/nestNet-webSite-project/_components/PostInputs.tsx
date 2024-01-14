@@ -83,7 +83,6 @@ export default function PostInputs() {
                                         theme={'snow'}
                                         modules={modules}
                                         formats={formats}
-                                        placeholder={'게시글 내용을 입력해주세요.'}
                                         defaultValue={field.value}
                                         className={'h-[26rem] rounded-b-xl border-t border-t-gray-300'}
                                         onChange={(content: string) => {

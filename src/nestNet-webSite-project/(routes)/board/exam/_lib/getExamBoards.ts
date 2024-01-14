@@ -6,14 +6,14 @@ interface ExamPost {
     subject: string;
     professor: string;
     year: number;
-    semester: number;
+    semester: string | number;
     examType: string;
     userName: string;
 }
 
 interface ExamPostSearchFilter {
-    year: number;
-    semester: string;
+    year: string;
+    semester: string | number;
     examType: string;
     subject: string;
     professor: string;
@@ -102,20 +102,59 @@ const examPosts: ExamPost[] = [
         examType: 'FINAL',
         userName: '테스트',
     },
+    {
+        id: 100,
+        subject: '객체지향프로그래',
+        professor: '최경',
+        year: 2023,
+        semester: 1,
+        examType: 'FINAL',
+        userName: '테스트',
+    },
+    {
+        id: 101,
+        subject: '운영체제',
+        professor: '조희승',
+        year: 2023,
+        semester: 1,
+        examType: 'MID',
+        userName: '테스트',
+    },
+    {
+        id: 102,
+        subject: '운영체제',
+        professor: '조희승',
+        year: 2023,
+        semester: 1,
+        examType: 'FINAL',
+        userName: '테스트',
+    },
 ];
 
-const getExamPosts: QueryFunction<
+const getExamBoards: QueryFunction<
     {
         totalSize: number;
-        examPosts: ExamPost[];
+        dtoList: ExamPost[];
     },
     [_1: string, searchfilter: ExamPostSearchFilter]
-> = ({ queryKey }) => {
+> = async ({ queryKey }) => {
     const [_, searchFilter] = queryKey;
-    console.log(searchFilter);
 
-    // axios 로 데이터 가져오기
-    return Promise.resolve({ totalSize: 20, examPosts });
+    const { year, semester, examType, subject, professor, currentPage } = searchFilter;
+    // return axios
+    //     .get(
+    //         `${process.env.REACT_APP_BACKEND_URL}:8080/exam-collection-post?${year === 0 ? '' : `year=${year}&`}${
+    //             Number(semester) === 0 ? '' : `semester=${semester}&`
+    //         }${examType === '' ? '' : `examType=${examType}&`}${subject === '' ? '' : `subject=${subject}&`}${
+    //             professor === '' ? '' : `professor=${professor}&`
+    //         }page=${currentPage - 1}&size=9`,
+    //         {
+    //             headers: { Authorization: localStorage.getItem('access_token') },
+    //         },
+    //     )
+    //     .then(response => response.data.response);
+
+    return Promise.resolve({ totalSize: 45, dtoList: examPosts });
 };
 
-export default getExamPosts;
+export default getExamBoards;

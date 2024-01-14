@@ -4,13 +4,12 @@ import { ChangeEventHandler, useCallback, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FormProvider, SubmitHandler, useForm } from 'react-hook-form';
 import PostInputs from '../../../../../_components/PostInputs';
-import ProfileImageManagement from '../../_components/ProfileImageManagement';
-import FileUpload from '../../../../../_components/FileUpload';
+import ImageManagement from '../../_components/ImageManagement';
 
 interface Inputs {
     title: string;
     bodyContent: string;
-    profileImage: FileList;
+    image: FileList;
 }
 
 interface FileData {
@@ -27,21 +26,40 @@ export default function AboutMePostForm() {
         defaultValues: { bodyContent: '' },
     });
 
-    const handleFileInputChange: ChangeEventHandler<HTMLInputElement> = useCallback(event => {
-        const newFileInformation: FileData[] = Array.from(event.target.files).map(file => ({
-            id: nanoid(),
-            file,
-        }));
-        setFileInformation(prevState => [...prevState, ...newFileInformation]);
-    }, []);
-
-    const handleFileDeleteButtonClick = useCallback((targetFileInfo: FileData) => {
-        setFileInformation(prevState => prevState.filter(fileInfo => fileInfo.id !== targetFileInfo.id));
-    }, []);
-
     const onSubmit: SubmitHandler<Inputs> = async data => {
-        await new Promise(resolve => setTimeout(() => resolve(1000), 10 * 1000));
-        console.log(data);
+        console.log(data.image['0']);
+        console.log('?');
+        try {
+            console.log('??');
+            const formData = new FormData();
+            const blob = new Blob(
+                [
+                    JSON.stringify({
+                        title: data.title,
+                        bodyContent: data.bodyContent,
+                    }),
+                ],
+                { type: 'application/json' },
+            );
+            formData.append('data', blob);
+            formData.append('file', data.image['0']);
+            console.log('??');
+
+            const response = await axios.post(
+                `${process.env.REACT_APP_BACKEND_URL}:8080/introduction-post/post`,
+                formData,
+                {
+                    headers: {
+                        'Content-Type': 'multipart/form-data',
+                        Authorization: localStorage.getItem('access_token'),
+                    },
+                },
+            );
+
+            console.log(response);
+        } catch (error) {
+            console.log(error);
+        }
     };
 
     return (
@@ -53,12 +71,7 @@ export default function AboutMePostForm() {
                 <div
                     className={'mt-8 flex h-fit w-2/6 flex-col rounded-3xl border border-gray-200 px-6 py-5 shadow-md'}
                 >
-                    <ProfileImageManagement />
-                    <FileUpload
-                        fileInformation={fileInformation}
-                        onFileInputChange={handleFileInputChange}
-                        onFileDeleteButtonClick={handleFileDeleteButtonClick}
-                    />
+                    <ImageManagement />
                     <button
                         className={
                             'w-full rounded-2xl bg-slate-950 p-3 text-white transition-all enabled:cursor-pointer enabled:hover:bg-slate-950/[.85] disabled:cursor-default disabled:opacity-50'
