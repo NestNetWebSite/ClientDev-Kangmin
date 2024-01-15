@@ -1,8 +1,8 @@
-import { pick } from 'lodash';
+import { Navigate, useLoaderData } from 'react-router-dom';
 import UnifiedBoardModifyForm from './_components/UnifiedBoardModifyForm';
-import type { BoardInfoResponse } from '../../info/types';
+import getSingleUnifiedBoardInfo from './_lib/getSingleUnifiedBoardInfo';
 
-const response: BoardInfoResponse = {
+const response = {
     response: {
         'is-member-liked': false,
         'file-data': [
@@ -30,21 +30,20 @@ const response: BoardInfoResponse = {
 };
 
 export async function unifiedBoardDataLoader() {
+    const boardId = window.location.pathname.split('/').at(-1);
     try {
-        return await new Promise(resolve => {
-            setTimeout(() => {
-                resolve({
-                    ...pick(response.response['post-data'], ['title', 'bodyContent', 'unifiedPostType']),
-                    existingFileData: response.response['file-data'],
-                });
-            });
-        });
+        return await getSingleUnifiedBoardInfo(boardId);
     } catch (error) {
         return null;
     }
 }
 
 export default function Page() {
+    const boardId = window.location.pathname.split('/').at(-1);
+    if (useLoaderData() === null) {
+        window.alert('에러가 발생하였습니다. 관리자에게 문의해 주세요.');
+        return <Navigate to={`/board/unified/${boardId}`} replace />;
+    }
     return (
         <main className={'w-full'}>
             <UnifiedBoardModifyForm />

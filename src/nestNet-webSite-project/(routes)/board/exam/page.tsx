@@ -6,7 +6,7 @@ import useExamSearchFilterStore from '../../../_stores/useExamSearchFilterStore'
 import SearchFilterArea from './_components/SearchFilterArea';
 import ExamBoardList from './_components/ExamBoardList';
 import PostsPagination from '../../../_components/PostsPagination';
-import ExamBoardAddButton from './_components/ExamBoardAddButton';
+import BoardAddButton from '../../../_components/BoardAddButton';
 import getExamBoards from './_lib/getExamBoards';
 import { isEqual } from 'lodash';
 
@@ -45,7 +45,7 @@ export default function Page() {
     }, []);
 
     const { data } = useQuery({
-        queryKey: ['examList', { ...currentSearchFilter, currentPage }],
+        queryKey: ['examBoards', { ...currentSearchFilter, currentPage }],
         queryFn: getExamBoards,
         retry: false,
         refetchOnWindowFocus: false,
@@ -55,10 +55,17 @@ export default function Page() {
     return (
         <>
             <div className='relative mx-auto w-[70rem] border-x border-gray-200'>
-                <SearchFilterArea
-                    currentSearchFilter={currentSearchFilter}
-                    updateCurrentSearchFilter={updateCurrentSearchFilter}
-                />
+                <div
+                    className={
+                        'sticky top-0 z-[1] flex w-full items-center justify-between gap-x-1 border-b border-gray-200 bg-white/70 px-6 py-4 backdrop-blur-md'
+                    }
+                >
+                    <SearchFilterArea
+                        currentSearchFilter={currentSearchFilter}
+                        updateCurrentSearchFilter={updateCurrentSearchFilter}
+                    />
+                    <BoardAddButton content={'게시글 작성'} href={'/board/exam/post'} />
+                </div>
                 {data && (
                     <>
                         <ExamBoardList boardList={data.dtoList} />
@@ -66,7 +73,6 @@ export default function Page() {
                     </>
                 )}
             </div>
-            <ExamBoardAddButton />
         </>
     );
 }

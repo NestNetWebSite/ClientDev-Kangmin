@@ -43,9 +43,9 @@ export default function UnifiedBoardPostForm() {
         fileInformation.forEach(fileInfo => formData.append('file', fileInfo.file));
 
         axios
-            .post(`${process.env.BACKEND_URL}/unified-post/post`, formData, {
+            .post(`${process.env.REACT_APP_BACKEND_URL}:8080/unified-post/post`, formData, {
                 withCredentials: true,
-                headers: { 'Content-Type': 'multipart/form-data' },
+                headers: { 'Content-Type': 'multipart/form-data', Authorization: localStorage.getItem('access_token') },
             })
             .then(() => window.alert('게시글을 작성하였습니다.'))
             .catch(error => window.alert(error))
@@ -68,9 +68,7 @@ export default function UnifiedBoardPostForm() {
                         onFileDeleteButtonClick={handleFileDeleteButtonClick}
                     />
                     <button
-                        className={
-                            'w-full rounded-2xl bg-slate-950 p-3 text-white transition-all hover:bg-slate-950/[.85]'
-                        }
+                        className={'w-full rounded-2xl bg-black p-3 text-white transition-all hover:bg-black/[.85]'}
                         type={'submit'}
                     >
                         <span className={'font-semibold '}>게시하기</span>

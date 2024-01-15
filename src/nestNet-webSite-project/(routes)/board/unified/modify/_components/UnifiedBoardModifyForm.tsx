@@ -127,9 +127,7 @@ export default function UnifiedBoardModifyForm() {
                         onFileDeleteButtonClick={handleFileDeleteButtonClick}
                     />
                     <button
-                        className={
-                            'w-full rounded-2xl bg-slate-950 p-3 text-white transition-all hover:bg-slate-950/[.85]'
-                        }
+                        className={'w-full rounded-2xl bg-black p-3 text-white transition-all hover:bg-black/[.85]'}
                         type={'submit'}
                     >
                         <span className={'font-semibold '}>게시하기</span>

@@ -11,21 +11,19 @@ const unifiedPostTypeOptions = [
     { value: 'FREE', label: '자유' },
     { value: 'DEV', label: '개발' },
     { value: 'CAREER', label: '진로' },
+    { value: 'JOB_INFO', label: '취업 정보' },
 ];
 
 export default function CategoryInput() {
     const {
         control,
         formState: { errors },
-        getValues,
     } = useFormContext<Inputs>();
-
-    console.log(getValues());
 
     return (
         <div className={'flex w-full flex-col'}>
             <div className={'mb-2 flex items-center gap-x-1'}>
-                <label className={'mx-2.5 font-bold text-slate-950'} htmlFor={'categoryInput'}>
+                <label className={'mx-2.5 font-bold text-black'} htmlFor={'categoryInput'}>
                     카테고리
                 </label>
                 {errors?.unifiedPostType?.message && errors?.unifiedPostType?.type === 'required' && (
