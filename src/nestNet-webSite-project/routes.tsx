@@ -23,7 +23,7 @@ import ExamBoardPostPage from './(routes)/board/exam/post/page';
 import ExamBoardModifyPage, { examBoardDataLoader } from './(routes)/board/exam/modify/page';
 import AboutMePostPage from './(routes)/(life)/about_me/post/page';
 import UserActivityPage from './(routes)/user/activity/page';
-import ErrorPage403 from './(routes)/error/HTTP 403/index';
+import Error404Page from './(routes)/_errors/http404/page';
 
 const router = createBrowserRouter([
     {
@@ -44,6 +44,7 @@ const router = createBrowserRouter([
             { path: '/signup', element: <SignUpPage />, caseSensitive: true },
             { path: '/idpw-search', element: <SearchIdPwPage />, caseSensitive: true },
         ],
+        errorElement: <Error404Page />,
     },
     {
         element: <PrivateRoute />,
@@ -79,7 +80,6 @@ const router = createBrowserRouter([
             { path: '/board/exam/post', element: <ExamBoardPostPage /> },
             { path: '/board/exam/modify/:boardId', element: <ExamBoardModifyPage />, loader: examBoardDataLoader },
             { path: '/about_me/post', element: <AboutMePostPage /> },
-            { path: '/error/unauthorized', element: <ErrorPage403 /> },
         ],
     },
 ]);
