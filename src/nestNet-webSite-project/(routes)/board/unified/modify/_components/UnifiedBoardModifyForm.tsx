@@ -5,14 +5,8 @@ import { useLoaderData, useNavigate, useParams } from 'react-router-dom';
 import { FormProvider, SubmitHandler, useForm } from 'react-hook-form';
 import PostInputs from '../../../../../_components/PostInputs';
 import CategoryInput from '../../_components/CategoryInput';
-import FileUpload from '../../../../../_components/FileUpload';
-
-interface ExistingBoardInfo {
-    title: string;
-    unifiedPostType: string;
-    bodyContent: string;
-    existingFileData: { id: number; originalFileName: string; saveFileName: string }[];
-}
+import FileUploadDropzone from '../../../../../_components/FileUploadDropzone';
+import FileList from '../../../../../_components/FileList';
 
 interface Inputs {
     title: string;
@@ -26,45 +20,15 @@ interface FileData {
     isOriginal?: boolean;
 }
 
-const response = {
-    response: {
-        'is-member-liked': false,
-        'file-data': [
-            {
-                id: 44,
-                originalFileName: '개발 게시판 테스트 이미지.png',
-                saveFileName: 'c4a59409-cc6d-4e9e-84fe-3c2c9affff8f_개발 게시판 테스트 이미지.png',
-            },
-        ],
-        'comment-data': [],
-        'post-data': {
-            id: 63,
-            title: '도커 이미지가 뭔가요',
-            bodyContent: 'testtesttesttest',
-            viewCount: 1,
-            likeCount: 0,
-            unifiedPostType: 'DEV',
-            userName: '테스트2',
-            createdTime: [2023, 8, 7, 22, 59, 2, 606474000],
-            modifiedTime: null,
-            memberWritten: true,
-        },
-    },
-    error: null,
-};
-
-const unifiedPostTypeOptions: { value: string; label: string }[] = [
-    { value: 'FREE', label: '자유' },
-    { value: 'DEV', label: '개발' },
-    { value: 'CAREER', label: '진로' },
-];
-
 export default function UnifiedBoardModifyForm() {
     const navigate = useNavigate();
     const boardId = useParams().boardId;
 
     // @ts-ignore
-    const { title, unifiedPostType, bodyContent, existingFileData }: ExistingBoardInfo = useLoaderData();
+    const { title, unifiedPostType, bodyContent } = useLoaderData().unifiedPostDto;
+
+    // @ts-ignore
+    const existingFileData = useLoaderData().fileDtoList;
 
     const [fileInformation, setFileInformation] = useState<FileData[]>(
         existingFileData.map(file => ({
@@ -78,9 +42,12 @@ export default function UnifiedBoardModifyForm() {
 
     const formMethods = useForm<Inputs>({ mode: 'onBlur', defaultValues: { title, bodyContent, unifiedPostType } });
 
-    const handleFileInputChange: ChangeEventHandler<HTMLInputElement> = useCallback(event => {
-        const newFileInformation: FileData[] = Array.from(event.target.files).map(file => ({ id: nanoid(), file }));
-        setFileInformation(prevState => [...prevState, ...newFileInformation]);
+    const addFiles = useCallback((files: File[]) => {
+        const newFiles: FileData[] = files.map(file => ({
+            id: nanoid(),
+            file,
+        }));
+        setFileInformation(prevState => [...prevState, ...newFiles]);
     }, []);
 
     const handleFileDeleteButtonClick = useCallback((targetFileInfo: FileData) => {
@@ -113,24 +80,35 @@ export default function UnifiedBoardModifyForm() {
 
     return (
         <FormProvider {...formMethods}>
-            <form className={'mx-auto flex w-[84rem] gap-x-8 p-5'} onSubmit={formMethods.handleSubmit(onSubmit)}>
-                <div className={'mt-8 flex w-4/6 flex-col'}>
+            <form className={'mx-auto flex w-[50rem] flex-col py-8'} onSubmit={formMethods.handleSubmit(onSubmit)}>
+                <div className={'flex items-center justify-between'}>
+                    <h1 className={'text-3xl font-semibold'}>통합 게시판 글 수정</h1>
+                    <CategoryInput />
+                </div>
+                <div className={'my-8 w-full'}>
                     <PostInputs />
                 </div>
-                <div
-                    className={'mt-8 flex h-fit w-2/6 flex-col rounded-3xl border border-gray-200 px-6 py-5 shadow-md'}
-                >
-                    <CategoryInput />
-                    <FileUpload
-                        fileInformation={fileInformation}
-                        onFileInputChange={handleFileInputChange}
-                        onFileDeleteButtonClick={handleFileDeleteButtonClick}
-                    />
+                <div>
+                    <FileUploadDropzone addFiles={addFiles} />
+                    <FileList fileInformation={fileInformation} onFileDeleteButtonClick={handleFileDeleteButtonClick} />
+                </div>
+                <div className={'flex justify-end gap-x-4'}>
                     <button
-                        className={'w-full rounded-2xl bg-black p-3 text-white transition-all hover:bg-black/[.85]'}
+                        className={
+                            'rounded-xl border border-rose-800 p-3 text-rose-800 transition-all hover:bg-rose-50'
+                        }
+                        type={'button'}
+                        onClick={() => {
+                            navigate(-1);
+                        }}
+                    >
+                        <span className={'font-semibold '}>취소하기</span>
+                    </button>
+                    <button
+                        className={'rounded-xl bg-rose-800 p-3 text-white transition-all hover:bg-rose-900'}
                         type={'submit'}
                     >
-                        <span className={'font-semibold '}>게시하기</span>
+                        <span className={'font-semibold '}>수정하기</span>
                     </button>
                 </div>
             </form>

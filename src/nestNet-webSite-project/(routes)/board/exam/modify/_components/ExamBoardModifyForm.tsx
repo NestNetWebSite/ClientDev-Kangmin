@@ -3,20 +3,10 @@ import { nanoid } from 'nanoid';
 import { ChangeEventHandler, useCallback, useState } from 'react';
 import { useLoaderData, useNavigate, useParams } from 'react-router-dom';
 import { FormProvider, SubmitHandler, useForm } from 'react-hook-form';
-import FileUpload from '../../../../../_components/FileUpload';
 import PostInputs from '../../../../../_components/PostInputs';
 import ExamInfoInputs from '../../_components/ExamInfoInputs';
-
-interface ExistingBoardInfo {
-    title: string;
-    bodyContent: string;
-    subject: string;
-    professor: string;
-    year: number;
-    semester: number;
-    examType: string;
-    existingFileData: { id: number; originalFileName: string; saveFileName: string }[];
-}
+import FileUploadDropzone from '../../../../../_components/FileUploadDropzone';
+import FileList from '../../../../../_components/FileList';
 
 interface Inputs {
     title: string;
@@ -54,12 +44,19 @@ export default function ExamBoardModifyForm() {
         })),
     );
     const [existingFileIdList, setExistingFileIdList] = useState<number[]>(existingFileData.map(file => file.id));
-    console.log(existingFileIdList);
 
     const formMethods = useForm<Inputs>({
         mode: 'onBlur',
         defaultValues: { title, bodyContent, subject, professor, year, semester: semester.toString(), examType },
     });
+
+    const addFiles = useCallback((files: File[]) => {
+        const newFiles: FileData[] = files.map(file => ({
+            id: nanoid(),
+            file,
+        }));
+        setFileInformation(prevState => [...prevState, ...newFiles]);
+    }, []);
 
     const handleFileInputChange: ChangeEventHandler<HTMLInputElement> = useCallback(event => {
         const newFileInformation: FileData[] = Array.from(event.target.files).map(file => ({ id: nanoid(), file }));
@@ -111,24 +108,35 @@ export default function ExamBoardModifyForm() {
 
     return (
         <FormProvider {...formMethods}>
-            <form className={'mx-auto flex w-[84rem] gap-x-8 p-5'} onSubmit={formMethods.handleSubmit(onSubmit)}>
-                <div className={'mt-8 flex w-4/6 flex-col'}>
+            <form className={'mx-auto flex w-[50rem] flex-col py-8'} onSubmit={formMethods.handleSubmit(onSubmit)}>
+                <div>
+                    <h1 className={'text-3xl font-semibold'}>족보 게시판 글 수정</h1>
+                </div>
+                <div className={'my-8 w-full'}>
                     <PostInputs />
                 </div>
-                <div className={'mt-8 flex w-2/6 flex-col rounded-3xl border border-gray-200 px-6 py-5 shadow-md'}>
+                <div>
                     <ExamInfoInputs />
-                    <FileUpload
-                        fileInformation={fileInformation}
-                        onFileInputChange={handleFileInputChange}
-                        onFileDeleteButtonClick={handleFileDeleteButtonClick}
-                    />
+                    <FileUploadDropzone addFiles={addFiles} />
+                    <FileList fileInformation={fileInformation} onFileDeleteButtonClick={handleFileDeleteButtonClick} />
+                </div>
+                <div className={'flex justify-end gap-x-4'}>
                     <button
                         className={
-                            'w-full rounded-2xl bg-slate-950 p-3 text-white transition-all hover:bg-slate-950/[.85]'
+                            'rounded-xl border border-rose-800 p-3 text-rose-800 transition-all hover:bg-rose-50'
                         }
+                        type={'button'}
+                        onClick={() => {
+                            navigate(-1);
+                        }}
+                    >
+                        <span className={'font-semibold '}>취소하기</span>
+                    </button>
+                    <button
+                        className={'rounded-xl bg-rose-800 p-3 text-white transition-all hover:bg-rose-900'}
                         type={'submit'}
                     >
-                        <span className={'font-semibold '}>게시하기</span>
+                        <span className={'font-semibold'}>수정하기</span>
                     </button>
                 </div>
             </form>

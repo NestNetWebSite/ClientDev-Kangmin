@@ -1,56 +1,49 @@
-import axios from 'axios';
-import { nanoid } from 'nanoid';
 import { useCallback, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FormProvider, SubmitHandler, useForm } from 'react-hook-form';
-import ExamInfoInputs from '../../_components/ExamInfoInputs';
+import { nanoid } from 'nanoid';
+import axios from 'axios';
 import PostInputs from '../../../../../_components/PostInputs';
+import ExamInfoInputs from '../../../../board/exam/_components/ExamInfoInputs';
 import FileUploadDropzone from '../../../../../_components/FileUploadDropzone';
 import FileList from '../../../../../_components/FileList';
 
 interface Inputs {
-    subject: string;
-    professor: string;
-    year: number;
-    semester: string | number;
-    examType: string;
     title: string;
     bodyContent: string;
 }
 
-interface FileInfo {
+interface FileData {
     id: string;
     file: File;
 }
 
-export default function ExamBoardPostForm() {
-    const [fileInformation, setFileInformation] = useState<FileInfo[]>([]);
+export default function NoticePostForm() {
+    const [fileInformation, setFileInformation] = useState<FileData[]>([]);
     const navigate = useNavigate();
     const formMethods = useForm<Inputs>({
         mode: 'onBlur',
-        defaultValues: { bodyContent: '', year: new Date().getFullYear() },
     });
 
     const addFiles = useCallback((files: File[]) => {
-        const newFiles: FileInfo[] = files.map(file => ({
+        const newFiles: FileData[] = files.map(file => ({
             id: nanoid(),
             file,
         }));
         setFileInformation(prevState => [...prevState, ...newFiles]);
     }, []);
 
-    const handleFileDeleteButtonClick = useCallback((targetFileData: FileInfo) => {
-        setFileInformation(prevState => prevState.filter(fileInfo => fileInfo.id !== targetFileData.id));
+    const handleFileDeleteButtonClick = useCallback((targetFileData: FileData) => {
+        setFileInformation(prevState => prevState.filter(fileData => fileData.id !== targetFileData.id));
     }, []);
 
     const onSubmit: SubmitHandler<Inputs> = async data => {
-        data.semester = Number(data.semester);
         try {
             const formData = new FormData();
             const blob = new Blob([JSON.stringify({ ...data, postCategory: 'EXAM' })], { type: 'application/json' });
 
             formData.append('data', blob);
-            fileInformation.forEach(fileInfo => formData.append('file', fileInfo.file));
+            fileInformation.forEach(fileData => formData.append('file', fileData.file));
 
             await axios.post(`${process.env.REACT_APP_BACKEND_URL}:8080/exam-collection-post/post`, formData, {
                 withCredentials: true,
@@ -71,13 +64,12 @@ export default function ExamBoardPostForm() {
         <FormProvider {...formMethods}>
             <form className={'mx-auto flex w-[50rem] flex-col py-8'} onSubmit={formMethods.handleSubmit(onSubmit)}>
                 <div>
-                    <h1 className={'text-3xl font-semibold'}>족보 게시판 글 작성</h1>
+                    <h1 className={'text-3xl font-semibold'}>공지사항 작성</h1>
                 </div>
-                <div className={'my-8 w-full'}>
+                <div className={'mt-8 w-full'}>
                     <PostInputs />
                 </div>
                 <div>
-                    <ExamInfoInputs />
                     <FileUploadDropzone addFiles={addFiles} />
                     <FileList fileInformation={fileInformation} onFileDeleteButtonClick={handleFileDeleteButtonClick} />
                 </div>

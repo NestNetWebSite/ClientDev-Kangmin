@@ -11,10 +11,8 @@ import SignInPage from './(routes)/signIn/page';
 import SignUpPage from './(routes)/signUp/page';
 import SearchIdPwPage from './(routes)/searchIdPw/page';
 import UserPage from './(routes)/user/index';
-import ManagerPage from './(routes)/manager/index';
-import MemberInquiry from './(routes)/manager/manager-member-inquiry/MemberInuqiry';
 import BoardPage from './(routes)/board/page';
-import BoardInfoPage from './(routes)/board/info/page';
+import ValidateBoardId from './(routes)/board/info/_components/ValidateBoardId';
 import UnifiedBoardListPage from './(routes)/board/unified/page';
 import UnifiedBoardPostPage from './(routes)/board/unified/post/page';
 import UnifiedBoardModifyPage, { unifiedBoardDataLoader } from './(routes)/board/unified/modify/page';
@@ -22,6 +20,7 @@ import ExamBoardPage from './(routes)/board/exam/page';
 import ExamBoardPostPage from './(routes)/board/exam/post/page';
 import ExamBoardModifyPage, { examBoardDataLoader } from './(routes)/board/exam/modify/page';
 import AboutMePostPage from './(routes)/(life)/about_me/post/page';
+import NoticePostPage from './(routes)/(life)/notice/post/page';
 import UserActivityPage from './(routes)/user/activity/page';
 import Error404Page from './(routes)/_errors/http404/page';
 
@@ -58,10 +57,6 @@ const router = createBrowserRouter([
                 ],
             },
             {
-                element: <ManagerPage />,
-                children: [{ path: '/manager/member-inquiry', element: <MemberInquiry /> }],
-            },
-            {
                 element: <BoardPage />,
                 children: [
                     { path: '/board/unified', element: <UnifiedBoardListPage /> },
@@ -69,18 +64,20 @@ const router = createBrowserRouter([
                     { path: '/board/gallery', element: <>Board Gallery</> },
                 ],
             },
-            { path: '/board/unified/:id', element: <BoardInfoPage /> },
             { path: '/board/unified/post', element: <UnifiedBoardPostPage /> },
             {
                 path: '/board/unified/modify/:boardId',
                 element: <UnifiedBoardModifyPage />,
                 loader: unifiedBoardDataLoader,
             },
-            { path: '/board/exam/:id', element: <BoardInfoPage /> },
+            { path: '/board/unified/:id', element: <ValidateBoardId /> },
             { path: '/board/exam/post', element: <ExamBoardPostPage /> },
             { path: '/board/exam/modify/:boardId', element: <ExamBoardModifyPage />, loader: examBoardDataLoader },
+            { path: '/board/exam/:id', element: <ValidateBoardId /> },
             { path: '/about_me/post', element: <AboutMePostPage /> },
+            { path: '/notice/post', element: <NoticePostPage /> },
         ],
+        errorElement: <Error404Page />,
     },
 ]);
 

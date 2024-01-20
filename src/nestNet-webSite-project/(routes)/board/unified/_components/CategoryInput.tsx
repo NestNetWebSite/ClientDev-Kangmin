@@ -21,61 +21,44 @@ export default function CategoryInput() {
     } = useFormContext<Inputs>();
 
     return (
-        <div className={'flex w-full flex-col'}>
-            <div className={'mb-2 flex items-center gap-x-1'}>
-                <label className={'mx-2.5 font-bold text-black'} htmlFor={'categoryInput'}>
-                    카테고리
-                </label>
-                {errors?.unifiedPostType?.message && errors?.unifiedPostType?.type === 'required' && (
-                    <span className={'text-sm text-red-500'}>※ {errors.unifiedPostType.message}</span>
-                )}
-            </div>
-            <Controller
-                control={control}
-                name={'unifiedPostType'}
-                rules={{ required: { value: true, message: '카테고리를 선택해주세요.' } }}
-                render={({ field }) => {
-                    return (
-                        <Select
-                            isSearchable={false}
-                            inputId={'categoryInput'}
-                            placeholder={'필수 선택'}
-                            defaultValue={field.value ? unifiedPostTypeOptions.find(option => option.value) : null}
-                            options={unifiedPostTypeOptions}
-                            onChange={option => {
-                                field.onChange(option.value);
-                            }}
-                            onBlur={field.onBlur}
-                            ref={field.ref}
-                            menuPlacement={'auto'}
-                            classNames={{
-                                control(state) {
-                                    return `!px-2 !rounded-xl !h-[52px] !border !bg-white !text-sm !shadow-none !transition-all
-                                    ${
-                                        state.isFocused
-                                            ? errors?.unifiedPostType?.message
-                                                ? '!border-red-500'
-                                                : '!border-blue-500'
-                                            : errors?.unifiedPostType?.message
-                                              ? '!border-red-500'
-                                              : '!border-gray-300'
-                                    }
-                                    
-                                   `;
-                                },
+        <Controller
+            control={control}
+            name={'unifiedPostType'}
+            rules={{ required: { value: true, message: '카테고리를 선택해주세요.' } }}
+            render={({ field }) => {
+                return (
+                    <Select
+                        isSearchable={false}
+                        inputId={'categoryInput'}
+                        placeholder={'필수 선택'}
+                        defaultValue={
+                            field.value ? unifiedPostTypeOptions.find(option => option.value === field.value) : null
+                        }
+                        options={unifiedPostTypeOptions}
+                        onChange={option => {
+                            field.onChange(option.value);
+                        }}
+                        onBlur={field.onBlur}
+                        ref={field.ref}
+                        menuPlacement={'auto'}
+                        classNames={{
+                            control(state) {
+                                return `${
+                                    state.isFocused ? '!border-gray-300' : '!border-gray-300'
+                                } !px-2 !rounded-xl !h-[3rem] !border !bg-white !text-sm !shadow-none !transition-all`;
+                            },
 
-                                option() {
-                                    return '!text-sm';
-                                },
+                            option() {
+                                return '!text-sm';
+                            },
 
-                                placeholder() {
-                                    return '!text-[#a9a9a9]';
-                                },
-                            }}
-                        />
-                    );
-                }}
-            />
-        </div>
+                            placeholder() {
+                                return '!text-[#a9a9a9]';
+                            },
+                        }}
+                    />
+                );
+            }}
+        />
     );
 }
