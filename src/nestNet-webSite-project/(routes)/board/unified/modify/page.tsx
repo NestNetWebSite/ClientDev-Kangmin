@@ -1,6 +1,7 @@
 import { Navigate, useLoaderData } from 'react-router-dom';
 import UnifiedBoardModifyForm from './_components/UnifiedBoardModifyForm';
 import getSingleUnifiedBoardInfo from './_lib/getSingleUnifiedBoardInfo';
+import Error404Page from '../../../_errors/http404/page';
 
 const response = {
     'is-member-liked': false,
@@ -30,7 +31,7 @@ export async function unifiedBoardDataLoader() {
     const boardId = window.location.pathname.split('/').at(-1);
     try {
         // return await getSingleUnifiedBoardInfo(boardId);
-        return await new Promise(resolve => {
+        return await new Promise((resolve, reject) => {
             setTimeout(() => resolve(response));
         });
     } catch (error) {
@@ -39,10 +40,9 @@ export async function unifiedBoardDataLoader() {
 }
 
 export default function Page() {
-    const boardId = window.location.pathname.split('/').at(-1);
-    if (useLoaderData() === null) {
-        window.alert('에러가 발생하였습니다. 관리자에게 문의해 주세요.');
-        return <Navigate to={`/board/unified/${boardId}`} replace />;
+    const isBoardExist = !!useLoaderData();
+    if (!isBoardExist) {
+        return <Error404Page />;
     }
     return (
         <main className={'w-full'}>

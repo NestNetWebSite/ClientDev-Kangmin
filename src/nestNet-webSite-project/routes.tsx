@@ -1,6 +1,7 @@
 import { createBrowserRouter } from 'react-router-dom';
 import PublicRoute from './_routers/PublicRoute';
 import PrivateRoute from './_routers/PrivateRoute';
+import GlobalNavbar from './_components/globalNavbar/GlobalNavbar';
 import MainHome from './(routes)/mainHome/index';
 import IntroductionPage from './(routes)/introduction/index';
 import History from './(routes)/introduction/History';
@@ -10,7 +11,7 @@ import FormerExecutives from './(routes)/introduction/FormerExecutives';
 import SignInPage from './(routes)/signIn/page';
 import SignUpPage from './(routes)/signUp/page';
 import SearchIdPwPage from './(routes)/searchIdPw/page';
-import UserPage from './(routes)/user/index';
+import UserPage from './(routes)/user/page';
 import BoardPage from './(routes)/board/page';
 import ValidateBoardId from './(routes)/board/info/_components/ValidateBoardId';
 import UnifiedBoardListPage from './(routes)/board/unified/page';
@@ -43,7 +44,12 @@ const router = createBrowserRouter([
             { path: '/signup', element: <SignUpPage />, caseSensitive: true },
             { path: '/idpw-search', element: <SearchIdPwPage />, caseSensitive: true },
         ],
-        errorElement: <Error404Page />,
+        errorElement: (
+            <>
+                <GlobalNavbar />
+                <Error404Page />
+            </>
+        ),
     },
     {
         element: <PrivateRoute />,
@@ -77,7 +83,12 @@ const router = createBrowserRouter([
             { path: '/about_me/post', element: <AboutMePostPage /> },
             { path: '/notice/post', element: <NoticePostPage /> },
         ],
-        errorElement: <Error404Page />,
+        errorElement: (
+            <>
+                <GlobalNavbar />
+                <Error404Page />
+            </>
+        ),
     },
 ]);
 

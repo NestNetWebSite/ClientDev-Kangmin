@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 export default function Page() {
     const navigate = useNavigate();
     return (
-        <div className={'flex h-[100dvh] w-full items-center justify-center'}>
+        <div className={'flex h-[calc(100dvh-4.68rem)] w-full items-center justify-center'}>
             <div className={'flex w-[38rem] flex-col'}>
                 <img className={'w-full rounded-2xl'} src={'/네스트넷-404.png'} alt={'404_image'} />
                 <h2 className={'my-4 text-center text-3xl font-black text-rose-800'}>
@@ -14,7 +14,9 @@ export default function Page() {
                 </p>
                 <div className={'my-9 flex justify-center gap-x-7'}>
                     <button
-                        className={'rounded-xl border border-black px-4 py-3 font-bold text-black'}
+                        className={
+                            'rounded-xl border border-rose-800 px-4 py-3 font-bold text-rose-800 transition-all hover:bg-rose-50'
+                        }
                         type={'button'}
                         onClick={() => {
                             navigate(-1);
@@ -24,7 +26,7 @@ export default function Page() {
                     </button>
                     <button
                         className={
-                            'rounded-xl border border-black bg-black px-4 py-3 font-bold text-white transition-all hover:bg-black/[.85]'
+                            'rounded-xl border border-rose-800 bg-rose-800 px-4 py-3 font-bold text-white transition-all hover:bg-rose-900'
                         }
                         type={'button'}
                         onClick={() => {

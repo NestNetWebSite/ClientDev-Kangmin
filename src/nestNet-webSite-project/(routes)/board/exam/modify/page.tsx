@@ -1,5 +1,7 @@
 import getSingleExamBoardInfo from './_lib/getSingleExamBoardInfo';
 import ExamBoardModifyForm from './_components/ExamBoardModifyForm';
+import { useLoaderData } from 'react-router-dom';
+import Error404Page from '../../../_errors/http404/page';
 
 const response = {
     'is-member-liked': false,
@@ -58,7 +60,7 @@ export async function examBoardDataLoader() {
     const boardId = window.location.pathname.split('/').at(-1);
     try {
         // return await getSingleExamBoardInfo(boardId);
-        return await new Promise(resolve => {
+        return await new Promise((resolve, reject) => {
             setTimeout(() => resolve(response), 1000);
         });
     } catch (error) {
@@ -67,6 +69,10 @@ export async function examBoardDataLoader() {
 }
 
 export default function Page() {
+    const isBoardExist = !!useLoaderData();
+    if (!isBoardExist) {
+        return <Error404Page />;
+    }
     return (
         <main className={'w-full'}>
             <ExamBoardModifyForm />

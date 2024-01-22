@@ -52,9 +52,11 @@ export default function Page() {
         gcTime: 0,
     });
 
+    // w-[70rem] -> 기존
+    // w-[50rem]
     return (
         <>
-            <div className='relative mx-auto w-[70rem] border-x border-gray-200'>
+            <div className='relative mx-auto w-[50rem] border-x border-gray-200'>
                 <div
                     className={
                         'sticky top-0 z-[1] flex w-full items-center justify-between gap-x-1 border-b border-gray-200 bg-white/70 px-6 py-4 backdrop-blur-md'

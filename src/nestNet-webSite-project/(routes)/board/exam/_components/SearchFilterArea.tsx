@@ -38,7 +38,7 @@ export default function SearchFilterArea({ currentSearchFilter, updateCurrentSea
     // const handleSearchButtonClick = useCallback(
     //     debounce(() => {
     //         if (isEqual(examSearchFilter, currentSearchFilter) && currentPage === 1) {
-    //             queryClient.invalidateQueries({ queryKey: ['examList'] }).catch(error => window.alert(error));
+    //             queryClient.invalidateQueries({ queryKey: ['examList'] }).catch(_errors => window.alert(_errors));
     //         } else if (isEqual(examSearchFilter, currentSearchFilter) && currentPage !== 1) {
     //             setSearchParams({ page: '1' });
     //         } else {
@@ -50,24 +50,18 @@ export default function SearchFilterArea({ currentSearchFilter, updateCurrentSea
     // );
 
     return (
-        <div
-            className={
-                'sticky top-0 z-[1] flex w-full items-center gap-x-1 border-b border-gray-200 bg-white/30 px-6 py-4 backdrop-blur-md '
-            }
-        >
-            <div className={'relative'}>
-                <button
-                    onClick={event => {
-                        event.stopPropagation();
-                        setIsModalOpen(true);
-                    }}
-                    className={
-                        'mr-5 box-content rounded-3xl bg-slate-950 px-4 py-3 text-sm text-white transition-all hover:bg-slate-950/[.85]'
-                    }
-                >
-                    검색 필터
-                </button>
-            </div>
+        <div>
+            <button
+                onClick={event => {
+                    event.stopPropagation();
+                    setIsModalOpen(true);
+                }}
+                className={
+                    'mr-5 box-content rounded-2xl bg-slate-950 px-4 py-3 text-sm text-white transition-all hover:bg-slate-950/[.85]'
+                }
+            >
+                검색 필터
+            </button>
             <span
                 onClick={event => {
                     event.stopPropagation();
