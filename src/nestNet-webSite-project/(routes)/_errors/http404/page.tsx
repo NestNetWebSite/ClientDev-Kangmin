@@ -5,7 +5,11 @@ export default function Page() {
     return (
         <div className={'flex h-[calc(100dvh-4.68rem)] w-full items-center justify-center'}>
             <div className={'flex w-[38rem] flex-col'}>
-                <img className={'w-full rounded-2xl'} src={'/네스트넷-404.png'} alt={'404_image'} />
+                <img
+                    className={'w-full rounded-2xl'}
+                    src={require('../../../_assets/images/네스트넷-404.png')}
+                    alt={'404_image'}
+                />
                 <h2 className={'my-4 text-center text-3xl font-black text-rose-800'}>
                     해당 페이지를 찾을 수 없습니다.
                 </h2>

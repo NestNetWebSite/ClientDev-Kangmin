@@ -1,20 +1,17 @@
-import { useSearchParams } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
-import getUnifiedBoards from './_lib/getUnifiedBoards';
-import UnifiedBoardCategoryList from './_components/UnifiedBoardCategoryList';
+import { useSearchParams } from 'react-router-dom';
+import getNoticeBoards from './_lib/getNoticeBoards';
 import BoardAddButton from '../../_components/BoardAddButton';
-
 import BoardsPagination from '../../_components/BoardsPagination';
-import UnifiedBoardList from './_components/UnifiedBoardList';
+import NoticeBoardList from './_components/NoticeBoardList';
 
 export default function Page() {
     const [searchParams] = useSearchParams();
     const currentPage = Number(searchParams.get('page') ?? '1');
-    const currentCategory = searchParams.get('category') ?? 'free';
 
     const { data, isLoading } = useQuery({
-        queryKey: ['unifiedBoards', { currentCategory, currentPage }],
-        queryFn: getUnifiedBoards,
+        queryKey: ['noticeBoards', { currentPage }],
+        queryFn: getNoticeBoards,
         retry: false,
         refetchOnWindowFocus: false,
         gcTime: 0,
@@ -23,8 +20,6 @@ export default function Page() {
     if (isLoading) {
         return null;
     }
-
-    console.log(data);
 
     return (
         <>
@@ -35,15 +30,14 @@ export default function Page() {
             >
                 <div
                     className={
-                        'sticky top-0 z-[1] flex w-full items-center justify-between border-b border-gray-200 bg-white/70 px-6 py-4 backdrop-blur-md'
+                        'sticky top-0 z-[1] flex w-full items-center justify-end border-b border-gray-200 bg-white/70 px-6 py-4 backdrop-blur-md'
                     }
                 >
-                    <UnifiedBoardCategoryList />
-                    <BoardAddButton content={'게시글 작성'} href={'/board/post'} />
+                    <BoardAddButton content={'공지사항 작성'} href={'/notice/post'} />
                 </div>
                 {data && data.totalSize !== 0 ? (
                     <>
-                        <UnifiedBoardList unifiedBoardList={data.dtoList} />
+                        <NoticeBoardList boardList={data.dtoList} />
                         <BoardsPagination totalItemsCount={data.totalSize} />
                     </>
                 ) : (

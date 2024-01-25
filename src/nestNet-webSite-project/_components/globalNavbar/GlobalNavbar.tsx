@@ -23,18 +23,18 @@ const navItemsInformation: { label: string; pathname?: string; navItems?: NavIte
         navItems: [
             {
                 label: '동아리 연혁',
-                pathname: '/introduction/history',
+                pathname: '/history',
                 icon: <MdOutlineHistoryEdu className={'h-6 w-6'} />,
             },
             { label: '동아리 회칙', pathname: '/introduction/rules', icon: <BsFileRuled className={'h-6 w-6'} /> },
             {
                 label: '지도교수 및 임원',
-                pathname: '/introduction/executives',
+                pathname: '/executives',
                 icon: <LiaUsersSolid className={'h-6 w-6'} />,
             },
             {
                 label: '전 임원 소개',
-                pathname: '/introduction/former-executives',
+                pathname: '/former-executives',
                 icon: <PiUserSwitch className={'h-6 w-6'} />,
             },
         ],
@@ -43,23 +43,26 @@ const navItemsInformation: { label: string; pathname?: string; navItems?: NavIte
     {
         label: '게시판',
         navItems: [
-            { label: '갤러리', pathname: '/board/gallery', icon: <AiOutlinePicture className={'h-6 w-6'} /> },
-            { label: '통합 게시판', pathname: '/board/unified', icon: <PiCirclesThree className={'h-6 w-6'} /> },
-            { label: '족보 게시판', pathname: '/board/exam', icon: <PiExamLight className={'h-6 w-6'} /> },
             {
-                label: '취업 게시판',
-                pathname: '/board/recruit',
-                icon: <HiOutlineBuildingOffice2 className={'h-6 w-6'} />,
+                label: '갤러리',
+                pathname: '/gallery',
+                icon: <AiOutlinePicture className={'h-6 w-6'} />,
             },
+            {
+                label: '통합 게시판',
+                pathname: '/board',
+                icon: <PiCirclesThree className={'h-6 w-6'} />,
+            },
+            { label: '족보 게시판', pathname: '/pedigree', icon: <PiExamLight className={'h-6 w-6'} /> },
         ],
     },
 
     {
         label: '생활',
         navItems: [
-            { label: '공지사항', pathname: '/(life)/notice', icon: <LiaExclamationSolid className={'h-6 w-6'} /> },
-            { label: '자기 소개', pathname: '/(life)/introduction', icon: <FaChalkboardUser className={'h-6 w-6'} /> },
-            { label: '출석부', pathname: '/(life)/attendance', icon: <LiaAddressBookSolid className={'h-6 w-6'} /> },
+            { label: '공지사항', pathname: '/notice', icon: <LiaExclamationSolid className={'h-6 w-6'} /> },
+            { label: '자기 소개', pathname: '/about_me', icon: <FaChalkboardUser className={'h-6 w-6'} /> },
+            { label: '출석부', pathname: '/attendance', icon: <LiaAddressBookSolid className={'h-6 w-6'} /> },
         ],
     },
 
@@ -73,6 +76,7 @@ export default function GlobalNavbar() {
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const [dropdownTarget, setDropdownTarget] = useState('');
     const location = useLocation();
+    console.log('global');
 
     const handleDropdownClose = useCallback(() => {
         setIsDropdownOpen(false);
@@ -96,6 +100,7 @@ export default function GlobalNavbar() {
 
     return (
         <nav
+            id={'globalNavbar'}
             className={'z-10 flex h-[4.68rem] w-full justify-between border-b border-b-gray-200 bg-white p-4 shadow-sm'}
         >
             <div className={'flex-1'}>

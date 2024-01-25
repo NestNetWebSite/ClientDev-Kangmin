@@ -1,27 +1,39 @@
 import { createBrowserRouter } from 'react-router-dom';
+
 import PublicRoute from './_routers/PublicRoute';
 import PrivateRoute from './_routers/PrivateRoute';
+
 import GlobalNavbar from './_components/globalNavbar/GlobalNavbar';
 import MainHome from './(routes)/mainHome/index';
+
 import IntroductionPage from './(routes)/introduction/index';
 import History from './(routes)/introduction/History';
 import Rules from './(routes)/introduction/Rules';
 import Executives from './(routes)/introduction/Executives';
 import FormerExecutives from './(routes)/introduction/FormerExecutives';
+
 import SignInPage from './(routes)/signIn/page';
 import SignUpPage from './(routes)/signUp/page';
 import SearchIdPwPage from './(routes)/searchIdPw/page';
+
 import UserPage from './(routes)/user/page';
-import BoardPage from './(routes)/board/page';
-import ValidateBoardId from './(routes)/board/info/_components/ValidateBoardId';
-import UnifiedBoardListPage from './(routes)/board/unified/page';
-import UnifiedBoardPostPage from './(routes)/board/unified/post/page';
-import UnifiedBoardModifyPage, { unifiedBoardDataLoader } from './(routes)/board/unified/modify/page';
-import ExamBoardPage from './(routes)/board/exam/page';
-import ExamBoardPostPage from './(routes)/board/exam/post/page';
-import ExamBoardModifyPage, { examBoardDataLoader } from './(routes)/board/exam/modify/page';
-import AboutMePostPage from './(routes)/(life)/about_me/post/page';
-import NoticePostPage from './(routes)/(life)/notice/post/page';
+
+import ValidateBoardId from './_components/boardInfo/ValidateBoardId';
+
+import UnifiedBoardListPage from './(routes)/board/page';
+import UnifiedBoardPostPage from './(routes)/board/post/page';
+import UnifiedBoardModifyPage, { unifiedBoardDataLoader } from './(routes)/board/modify/page';
+
+import PedigreeBoardListPage from './(routes)/pedigree/page';
+import PedigreeBoardPostPage from './(routes)/pedigree/post/page';
+import PedigreeBoardModifyPage, { pedigreeBoardDataLoader } from './(routes)/pedigree/modify/page';
+
+import AboutMePostPage from './(routes)/about_me/post/page';
+
+import NoticeBoardListPage from './(routes)/notice/page';
+import NoticeBoardPostPage from './(routes)/notice/post/page';
+import NoticeBoardModifyPage, { noticeBoardLoader } from './(routes)/notice/modify/page';
+
 import UserActivityPage from './(routes)/user/activity/page';
 import Error404Page from './(routes)/_errors/http404/page';
 
@@ -31,13 +43,12 @@ const router = createBrowserRouter([
         children: [
             { path: '/', element: <MainHome /> },
             {
-                path: '/introduction',
                 element: <IntroductionPage />,
                 children: [
-                    { path: '/introduction/history', element: <History /> },
-                    { path: '/introduction/rules', element: <Rules /> },
-                    { path: '/introduction/executives', element: <Executives /> },
-                    { path: '/introduction/former-executives', element: <FormerExecutives /> },
+                    { path: '/history', element: <History /> },
+                    { path: '/rules', element: <Rules /> },
+                    { path: '/executives', element: <Executives /> },
+                    { path: '/former-executives', element: <FormerExecutives /> },
                 ],
             },
             { path: '/signin', element: <SignInPage />, caseSensitive: true },
@@ -62,26 +73,58 @@ const router = createBrowserRouter([
                     { path: '/user/:userId?/study', element: <>스터디 관리</> },
                 ],
             },
+
+            /*
+                <통합 게시판 관련>
+                /board -> 통합 게시판 조회
+                /board/:boardId -> 통합 게시판 조회 (1개)
+                /board/post -> 통합 게시판 작성
+                /board/modify/:boardId -> 통합 게시판 수정
+            */
             {
-                element: <BoardPage />,
-                children: [
-                    { path: '/board/unified', element: <UnifiedBoardListPage /> },
-                    { path: '/board/exam', element: <ExamBoardPage /> },
-                    { path: '/board/gallery', element: <>Board Gallery</> },
-                ],
+                path: '/board',
+                element: <UnifiedBoardListPage />,
             },
-            { path: '/board/unified/post', element: <UnifiedBoardPostPage /> },
             {
-                path: '/board/unified/modify/:boardId',
+                path: '/board/:boardId',
+                element: <ValidateBoardId />,
+            },
+            {
+                path: '/board/post',
+                element: <UnifiedBoardPostPage />,
+            },
+            {
+                path: '/board/modify/:boardId',
                 element: <UnifiedBoardModifyPage />,
                 loader: unifiedBoardDataLoader,
             },
-            { path: '/board/unified/:id', element: <ValidateBoardId /> },
-            { path: '/board/exam/post', element: <ExamBoardPostPage /> },
-            { path: '/board/exam/modify/:boardId', element: <ExamBoardModifyPage />, loader: examBoardDataLoader },
-            { path: '/board/exam/:id', element: <ValidateBoardId /> },
+
+            /*
+                <족보 게시판 관련>
+                /pedigree -> 족보 게시판 조회
+                /pedigree/:boardId -> 족보 게시판 조회 (1개)
+                /pedigree/post -> 족보 게시판 작성
+                /pedigree/modify/:boardId -> 족보 게시판 수정
+            */
+            { path: '/pedigree', element: <PedigreeBoardListPage /> },
+            { path: '/pedigree/:boardId', element: <ValidateBoardId /> },
+            { path: '/pedigree/post', element: <PedigreeBoardPostPage /> },
+            {
+                path: '/pedigree/modify/:boardId',
+                element: <PedigreeBoardModifyPage />,
+                loader: pedigreeBoardDataLoader,
+            },
+
+            { path: '/notice', element: <NoticeBoardListPage /> },
+            { path: '/notice/:boardId', element: <ValidateBoardId /> },
+            { path: '/notice/post', element: <NoticeBoardPostPage /> },
+            {
+                path: '/notice/modify/:boardId',
+                element: <NoticeBoardModifyPage />,
+                loader: noticeBoardLoader,
+            },
+
             { path: '/about_me/post', element: <AboutMePostPage /> },
-            { path: '/notice/post', element: <NoticePostPage /> },
         ],
         errorElement: (
             <>

@@ -25,15 +25,16 @@ function Root() {
     return (
         <>
             <RouterProvider router={router} />
-            <ReactQueryDevtools />
         </>
     );
 }
 
 export default function App() {
+    axios.defaults.withCredentials = true;
     return (
         <QueryClientProvider client={queryClient}>
             <Root />
+            <ReactQueryDevtools />
         </QueryClientProvider>
     );
 }
